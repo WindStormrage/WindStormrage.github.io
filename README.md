@@ -10,4 +10,4 @@ npm run deploy
 ```
 hexo b
 ```
-上传工程文件到deploy分支
+上传工程文件到backup分支
