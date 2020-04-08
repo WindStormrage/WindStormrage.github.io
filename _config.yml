@@ -107,4 +107,4 @@ backup:
   theme: next
   message: Back up my xiedashuaige.cn blog
   repository:
-    github: git@github.com:WindStormrage/WindStormrage.github.io.git
+    github: git@github.com:WindStormrage/WindStormrage.github.io.git,backup
