@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-logo.png">
+  <link rel="mask-icon" href="/images/favicon-logo.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="先从一个简单的闭包开始想从函数外部访问到函数内部的变量，当然是不可以访问的，但是你如果在这个函数里面返回一个方法用来对这个函数里面的变量进行操作的话，就可以像是在外面访问量函数内的变量（其实我暂时是认为没有访问函数里面变量的，实质上只是调用了对相应参数进行操作的方法），举个栗子把">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我是怎么搞懂闭包的？">
+<meta property="og:url" content="https://xiedashuaige.cn/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/index.html">
+<meta property="og:site_name" content="WindStormrage Blog">
+<meta property="og:description" content="先从一个简单的闭包开始想从函数外部访问到函数内部的变量，当然是不可以访问的，但是你如果在这个函数里面返回一个方法用来对这个函数里面的变量进行操作的话，就可以像是在外面访问量函数内的变量（其实我暂时是认为没有访问函数里面变量的，实质上只是调用了对相应参数进行操作的方法），举个栗子把">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-06-12T09:26:00.000Z">
+<meta property="article:modified_time" content="2020-04-09T08:14:42.358Z">
+<meta property="article:author" content="WindStormrage">
+<meta property="article:tag" content="闭包">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xiedashuaige.cn/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>我是怎么搞懂闭包的？ | WindStormrage Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WindStormrage Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon-logo.png">
+      <meta itemprop="name" content="WindStormrage">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WindStormrage Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          我是怎么搞懂闭包的？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-12 17:26:00" itemprop="dateCreated datePublished" datetime="2018-06-12T17:26:00+08:00">2018-06-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-09 16:14:42" itemprop="dateModified" datetime="2020-04-09T16:14:42+08:00">2020-04-09</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="先从一个简单的闭包开始"><a href="#先从一个简单的闭包开始" class="headerlink" title="先从一个简单的闭包开始"></a>先从一个简单的闭包开始</h2><p>想从函数外部访问到函数内部的变量，当然是不可以访问的，但是你如果在这个函数里面返回一个方法用来对这个函数里面的变量进行操作的话，就可以像是在外面访问量函数内的变量（其实我暂时是认为没有访问函数里面变量的，实质上只是调用了对相应参数进行操作的方法），举个栗子把</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    var i &#x3D; 0;</span><br><span class="line">&#125;</span><br><span class="line">console.log(++i);</span><br></pre></td></tr></table></figure>
+<pre><code>这当然会报错
+然后如果想执行这样的操作呢
+闭包是这么解决的
+我在方法里面返回一个这样的操作就好了</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    var i &#x3D; 0;</span><br><span class="line">    return function()&#123;</span><br><span class="line">        console.log(++i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var doAdd &#x3D; test();</span><br><span class="line">doAdd();</span><br><span class="line">doAdd();</span><br></pre></td></tr></table></figure>
+<p>所以我认为就是返回一个函数来供调用自加</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>但是吧，我说这是一个闭包，你肯定会认为是的，如果要你自己写一个闭包出来，那就写不出了，肯定会遇到很多问题，所以接下来我就讲讲我学习闭包的过程吧。</p>
+<h2 id="先从闭包开始"><a href="#先从闭包开始" class="headerlink" title="先从闭包开始"></a>先从闭包开始</h2><p>先是在犀牛书上看闭包，然后他就要我先去了解，作用域和作用域链。</p>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><p>在没有es6的let之前js的作用域只是函数作用域，每个函数有自己的作用域，然后其他的就是全局作用域了。</p>
+<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a>作用域链</h2><p>在全局中每定义一个变量，这些变量都会存在于window下，也可以通过最外层的this调用到</p>
+<h2 id="立即执行函数表达式"><a href="#立即执行函数表达式" class="headerlink" title="立即执行函数表达式"></a>立即执行函数表达式</h2><p>在我手写闭包的时候发现这样编写可以实现累加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var test2 &#x3D; (function () &#123;</span><br><span class="line">    var a2 &#x3D; 0;</span><br><span class="line">    return function () &#123;return ++a2;&#125;</span><br><span class="line">&#125;)()</span><br><span class="line">console.log(test2())</span><br><span class="line">console.log(test2())</span><br></pre></td></tr></table></figure>
+<p>这么写的话每次都是一个新的累加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var tests &#x3D; function () &#123;</span><br><span class="line">    var a &#x3D; 0;</span><br><span class="line">    return function () &#123;return ++a;&#125;</span><br><span class="line">&#125;</span><br><span class="line">console.log((tests())())</span><br><span class="line">console.log((tests())())</span><br></pre></td></tr></table></figure>
+<pre><code>于是我就开始思考是不是立即执行函数的原因
+于是马上学习了一波立即执行函数（IIFE）
+其实立即执行函数就是在定义函数的时刻，马上去把这个函数执行了</code></pre><p>一个简单的栗子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(function () &#123; dosomething; &#125;)();</span><br></pre></td></tr></table></figure>
+<p>如果这个转换成正常的函数是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var a &#x3D; function () &#123; dosomething; &#125;</span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+<p>所以我们上面的闭包的代码转换成正常的函数是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var test2 &#x3D; function () &#123;</span><br><span class="line">    var a2 &#x3D; 0;</span><br><span class="line">    return function () &#123;return ++a2;&#125;</span><br><span class="line">&#125;</span><br><span class="line">var test &#x3D; test2()</span><br><span class="line">console.log(test())</span><br><span class="line">console.log(test())</span><br></pre></td></tr></table></figure>
+<pre><code>如果这样的话就可以实现累加
+和我们上面的代码一比较就发现
+console.log((tests())())
+他在(tests())的时候定义了一个空间然后执行了(tests())()方法
+但是第二次的时候又分配了一个新的空间
+然后在新的空间里面累加，当然不会记录在一起
+然而我们立即执行函数的写法是创建了一个test的空间
+然后其他的操作都是在这个闭包的空间里面执行
+的（也就是在test2返回的那个函数的空间里面）</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function test () &#123;</span><br><span class="line">    var i &#x3D; 0;</span><br><span class="line">    return function () &#123;</span><br><span class="line">        document.write(++i)</span><br><span class="line">        document.write(&#39;&lt;br&gt;&#39;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var test1 &#x3D; test();</span><br><span class="line">test1();</span><br><span class="line">test1();</span><br><span class="line">var test2 &#x3D; test();</span><br><span class="line">test2();</span><br><span class="line">test2();</span><br></pre></td></tr></table></figure>
+<p>test1和test2是两个不同的闭包空间</p>
+<h2 id="再次对闭包的理解"><a href="#再次对闭包的理解" class="headerlink" title="再次对闭包的理解"></a>再次对闭包的理解</h2><p>看了廖雪峰大佬的博客突然对闭包有了另外一种理解</p>
+<pre><code>闭包就像java里面类的私有变量一样
+你在外面通过实例化了也不能操作那些私有变量
+你只能通过get方法和set方法等类似的方法来操作这个值
+而且你实际上并不是操作了这个值
+你知道调用了这个对象里面的方法
+然后这个对象里面的方法来操作这个值</code></pre><p>上代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function student () &#123;</span><br><span class="line">    var name &#x3D; &#39;xxx&#39;;</span><br><span class="line">    var getName &#x3D; function () &#123;</span><br><span class="line">        return name</span><br><span class="line">    &#125;</span><br><span class="line">    var setName &#x3D; function (newName) &#123;</span><br><span class="line">        name &#x3D; newName;</span><br><span class="line">    &#125;</span><br><span class="line">    return &#123;</span><br><span class="line">        getName: getName,</span><br><span class="line">        setName: setName,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var studentA &#x3D; student();</span><br><span class="line">console.log(studentA.getName())&#x2F;&#x2F;xxx</span><br><span class="line">studentA.setName(&quot;aaa&quot;);</span><br><span class="line">console.log(studentA.getName())&#x2F;&#x2F;aaa</span><br></pre></td></tr></table></figure>
+<h2 id="然后出现新问题"><a href="#然后出现新问题" class="headerlink" title="然后出现新问题"></a>然后出现新问题</h2><h3 id="问题1"><a href="#问题1" class="headerlink" title="问题1"></a>问题1</h3><p>我跟以为大佬分享后她跟我提出</p>
+<pre><code>如果在return那里加个name：name 然后studenta.name结果是啥</code></pre><p>我发现居然还是之前的xxx我改成aaa了并没有变化<br>后来发现在get和set里面加了个this后再调用name的时候就可以看到变化了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function student () &#123;</span><br><span class="line">    var name &#x3D; &#39;xxx&#39;;</span><br><span class="line">    var getName &#x3D; function () &#123;</span><br><span class="line">        return this.name</span><br><span class="line">    &#125;</span><br><span class="line">    var setName &#x3D; function (newName) &#123;</span><br><span class="line">        this.name &#x3D; newName;</span><br><span class="line">    &#125;</span><br><span class="line">    return &#123;</span><br><span class="line">        getName: getName,</span><br><span class="line">        setName: setName,</span><br><span class="line">        name: name</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var studentA &#x3D; student();</span><br><span class="line">console.log(studentA.getName())&#x2F;&#x2F;xxx</span><br><span class="line">studentA.setName(&quot;aaa&quot;);</span><br><span class="line">console.log(studentA.getName())&#x2F;&#x2F;aaa</span><br><span class="line">console.log(studentA.name);&#x2F;&#x2F;aaa</span><br></pre></td></tr></table></figure>
+
+<p>开始对闭包有一个非常大的误解，一直以为我修改这个闭包的变量的值就会直接修改前面的方法里面的变量（直接修改student这个方法里面的name），其实不是的，当你创建一个闭包后（var studentA = student()）然后内存中就会对应于你创建的闭包分配一个空间（然后直接修改是修改studentA闭包里面的name）（不信的话你可以修改了name后再新建一个studentB发现还是最开始的值）。<br>然后我又有一段时间把闭包分配的空间和我return的这个对象视为一个空间了，其实不然，返回的对象是用studentA接受的一个空间，而闭包的空间是对应studentA生成的空间</p>
+<p>对应上面为什么用this的话就可以name的值，用之前的setName改变的值只能通过getName查看。因为不用this和用this修改的地方不同，你可以在setName中试着输出this，因为this在studentA中，所以这里的this指向的是return的对象。所以加了this是修改return对象，没加this是修改闭包的原始值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">function student () &#123;</span><br><span class="line">    let name &#x3D; &#39;xxx&#39;;</span><br><span class="line">	let getName &#x3D; function () &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;;</span><br><span class="line">	let getName2 &#x3D; function () &#123;</span><br><span class="line">        return this.name;</span><br><span class="line">    &#125;;</span><br><span class="line">	let setName &#x3D; function (newName) &#123;</span><br><span class="line">        name &#x3D; newName;</span><br><span class="line">    &#125;;</span><br><span class="line">	let setName2 &#x3D; function (newName) &#123;</span><br><span class="line">        this.name &#x3D; newName;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return &#123;</span><br><span class="line">        getName: getName,</span><br><span class="line">        getName2: getName2,</span><br><span class="line">        setName: setName,</span><br><span class="line">        setName2: setName2,</span><br><span class="line">        name2: name                &#x2F;&#x2F;这里我写成Rname为了后面setName2会看到新建了一个属性</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let studentA &#x3D; student();          &#x2F;&#x2F;在这里你分配了两个空间，一个是return的空间还有一个是studentA对应的闭包的空间</span><br><span class="line"></span><br><span class="line">console.log(studentA.name2);       &#x2F;&#x2F;xxx        (在return中的name2的值是xxx)</span><br><span class="line">console.log(studentA.getName());   &#x2F;&#x2F;xxx        (在闭包空间中name的值是xxx)</span><br><span class="line">console.log(studentA.getName2());  &#x2F;&#x2F;undefined  (因为你在return的对象里面没有name这个属性，所以就根本找不到)</span><br><span class="line"></span><br><span class="line">studentA.setName(&#39;aaa&#39;);           &#x2F;&#x2F;修改了闭包原始值</span><br><span class="line">console.log(studentA.name2);       &#x2F;&#x2F;xxx        (在return中的name2的值是xxx)</span><br><span class="line">console.log(studentA.getName());   &#x2F;&#x2F;aaa        (在闭包空间中name的值是aaa)</span><br><span class="line">console.log(studentA.getName2());  &#x2F;&#x2F;undefined  (因为你在return的对象里面没有name这个属性，所以就根本找不到)</span><br><span class="line"></span><br><span class="line">studentA.setName2(&#39;bbb&#39;);           &#x2F;&#x2F;修改了return对象，但是发现没有name这个属性于是创建了一个name赋值为bbb</span><br><span class="line">console.log(studentA.name2);       &#x2F;&#x2F;xxx        (在return中的name2的值是xxx)</span><br><span class="line">console.log(studentA.getName());   &#x2F;&#x2F;aaa        (在闭包空间中name的值是aaa)</span><br><span class="line">console.log(studentA.getName2());  &#x2F;&#x2F;undefined  (在return中的name的值是bbb)</span><br><span class="line"></span><br><span class="line">let studentB &#x3D; student();          &#x2F;&#x2F;两个新的空间一个studentB的对象，一个studentB对应的闭包</span><br><span class="line"></span><br><span class="line">console.log(studentB.name2);       &#x2F;&#x2F;xxx        (在return中的name2的值是xxx)</span><br><span class="line">console.log(studentB.getName());   &#x2F;&#x2F;xxx        (在闭包空间中name的值是xxx)</span><br><span class="line">console.log(studentB.getName2());  &#x2F;&#x2F;undefined  (在return中没有name)</span><br></pre></td></tr></table></figure>
+
+<h3 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h3><p>还有一个问题是一个很经典的问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function count() &#123;</span><br><span class="line">    var arr &#x3D; [];</span><br><span class="line">    for (var i&#x3D;1; i&lt;&#x3D;3; i++) &#123;</span><br><span class="line">        arr.push(function () &#123;</span><br><span class="line">            return i;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    return arr;</span><br><span class="line">&#125;</span><br><span class="line">var results &#x3D; count();</span><br><span class="line">console.log(results[0]());&#x2F;&#x2F;4</span><br><span class="line">console.log(results[1]());&#x2F;&#x2F;4</span><br><span class="line">console.log(results[2]());&#x2F;&#x2F;4</span><br></pre></td></tr></table></figure>
+<p>按道理是输出1，2，3呀<br>然后大佬的解释是</p>
+<blockquote>
+<p>返回闭包时牢记的一点就是：返回函数不要引用任何循环变量，或者后续会发生变化的变量。</p>
+</blockquote>
+<blockquote>
+<p>如果一定要引用循环变量怎么办？方法是再创建一个函数，用该函数的参数绑定循环变量当前的值，无论该循环变量后续如何更改，已绑定到函数参数的值不变：</p>
+</blockquote>
+<p>这是优化后的代码，加了一个立即执行函数后让i等于1的时候立即把push执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function count() &#123;</span><br><span class="line">    var arr &#x3D; [];</span><br><span class="line">    for (var i&#x3D;1; i&lt;&#x3D;3; i++) &#123;</span><br><span class="line">        arr.push((function (n) &#123;</span><br><span class="line">            return function () &#123;</span><br><span class="line">                return n;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)(i));</span><br><span class="line">    &#125;</span><br><span class="line">    return arr;</span><br><span class="line">&#125;</span><br><span class="line">var results &#x3D; count();</span><br><span class="line">console.log(results[0]());&#x2F;&#x2F;1</span><br><span class="line">console.log(results[1]());&#x2F;&#x2F;2</span><br><span class="line">console.log(results[2]());&#x2F;&#x2F;3</span><br></pre></td></tr></table></figure>
+<p>但是为什么是这样的呢</p>
+<p>是因为在一个方法或者是变量的定义到执行会经历<br>1.进入编译环境<br>2.创建变量i<br>3.把i先初始化为undefined<br>4.执行代码给i赋值<br>所以在push里面的方法，在循环阶段的时候只进过了创建、初始化、赋值的操作，并没有执行，所以里面的i还是i没有变成真正的值。只有在后面执行的时候才会去找这个i。<br>所以只需要改成立即执行函数就可以在定义的时候同时执行一波，然后这个i就已经赋值了，后面就不会改变了。</p>
+<p>然后最后附上一个总结（<a href="https://blog.csdn.net/lqy455949477/article/details/76559932" target="_blank" rel="noopener">来自这里</a>）</p>
+<ol>
+<li>let 的「创建」过程被提升了，但是初始化没有提升。</li>
+<li>var 的「创建」和「初始化」都被提升了。</li>
+<li>function 的「创建」「初始化」和「赋值」都被提升了。</li>
+<li>const 和 let 只有一个区别，那就是 const 只有「创建」和「初始化」，没有「赋值」过程。都被提升了。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%97%AD%E5%8C%85/" rel="tag"># 闭包</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/29/%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%8D%95%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8/" rel="prev" title="动手实现一个单页面应用">
+      <i class="fa fa-chevron-left"></i> 动手实现一个单页面应用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/21/vue%E9%87%87%E7%94%A8history%E8%B7%AF%E7%94%B1%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/" rel="next" title="vue采用history路由的服务器部署问题">
+      vue采用history路由的服务器部署问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#先从一个简单的闭包开始"><span class="nav-number">1.</span> <span class="nav-text">先从一个简单的闭包开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#先从闭包开始"><span class="nav-number">3.</span> <span class="nav-text">先从闭包开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作用域"><span class="nav-number">4.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作用域链"><span class="nav-number">5.</span> <span class="nav-text">作用域链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#立即执行函数表达式"><span class="nav-number">6.</span> <span class="nav-text">立即执行函数表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#再次对闭包的理解"><span class="nav-number">7.</span> <span class="nav-text">再次对闭包的理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#然后出现新问题"><span class="nav-number">8.</span> <span class="nav-text">然后出现新问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">8.1.</span> <span class="nav-text">问题1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">8.2.</span> <span class="nav-text">问题2</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="WindStormrage"
+      src="/images/favicon-logo.png">
+  <p class="site-author-name" itemprop="name">WindStormrage</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/WindStormrage" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:695729033@qq.com" title="E-Mail → mailto:695729033@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WindStormrage</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

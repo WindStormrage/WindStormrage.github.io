@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-logo.png">
+  <link rel="mask-icon" href="/images/favicon-logo.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="nginx 安装直接用brew安装，没有brew的自行安装  brew install nginx  nginx 基本命令可以通过  nginx -h  查看  sudo nginx -t  查看nginx配置文件有没有语法错误，切记一定要用管理员权限运行，不然会出现错误  sudo nginx  这个就可以开启你的nginx  sudo nginx -s reload  可以重启你的ngin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx学习笔记">
+<meta property="og:url" content="https://xiedashuaige.cn/2018/12/08/nginx%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="WindStormrage Blog">
+<meta property="og:description" content="nginx 安装直接用brew安装，没有brew的自行安装  brew install nginx  nginx 基本命令可以通过  nginx -h  查看  sudo nginx -t  查看nginx配置文件有没有语法错误，切记一定要用管理员权限运行，不然会出现错误  sudo nginx  这个就可以开启你的nginx  sudo nginx -s reload  可以重启你的ngin">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-08T07:05:00.000Z">
+<meta property="article:modified_time" content="2020-04-09T08:09:00.954Z">
+<meta property="article:author" content="WindStormrage">
+<meta property="article:tag" content="file">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xiedashuaige.cn/2018/12/08/nginx%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>nginx学习笔记 | WindStormrage Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WindStormrage Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2018/12/08/nginx%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon-logo.png">
+      <meta itemprop="name" content="WindStormrage">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WindStormrage Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nginx学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-08 15:05:00" itemprop="dateCreated datePublished" datetime="2018-12-08T15:05:00+08:00">2018-12-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-09 16:09:00" itemprop="dateModified" datetime="2020-04-09T16:09:00+08:00">2020-04-09</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <a id="more"></a>
+
+<h2 id="nginx-安装"><a href="#nginx-安装" class="headerlink" title="nginx 安装"></a>nginx 安装</h2><p>直接用brew安装，没有brew的自行安装</p>
+<blockquote>
+<p>brew install nginx</p>
+</blockquote>
+<h2 id="nginx-基本命令"><a href="#nginx-基本命令" class="headerlink" title="nginx 基本命令"></a>nginx 基本命令</h2><p>可以通过</p>
+<blockquote>
+<p>nginx -h</p>
+</blockquote>
+<p>查看</p>
+<blockquote>
+<p>sudo nginx -t</p>
+</blockquote>
+<p>查看nginx配置文件有没有语法错误，切记一定要用管理员权限运行，不然会出现错误</p>
+<blockquote>
+<p>sudo nginx</p>
+</blockquote>
+<p>这个就可以开启你的nginx</p>
+<blockquote>
+<p>sudo nginx -s reload</p>
+</blockquote>
+<p>可以重启你的nginx<br>你还可以把reload替换成stop, quit, reopen, reload</p>
+<blockquote>
+<p>sudo nginx -c filename</p>
+</blockquote>
+<p>可以设置nginx的配置文件的目录，就是==nginx.conf==的位置</p>
+<h2 id="nginx-简单配置"><a href="#nginx-简单配置" class="headerlink" title="nginx 简单配置"></a>nginx 简单配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">	# 监听的端口</span><br><span class="line">	listen 80;</span><br><span class="line">	# 域名,当两个项目共用一个端口的时候就可以通过不同的server_name来访问到不同的服务器资源</span><br><span class="line">	server_name test.cn;</span><br><span class="line">	# 资源的根目录,如果资源在用户的文件夹里面的话可能会没有访问资源的权限,需要给文件设置777权限</span><br><span class="line">	# 你可以通过pwd目录查看当前的目录</span><br><span class="line">	root &#x2F;html&#x2F;demo;</span><br><span class="line">	# 如果网址上没有对应的资源地址打开的页面</span><br><span class="line">    index index.js index.html index.htm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个简单的nginx配置，你需要把配置写在你对应的==nginx.conf==里面，你也可以在nginx文件夹下新建一个文件夹servers然后在nginx.conf中引入这个文件夹下的文件,至于文件名你可以用test.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include servers&#x2F;*;</span><br></pre></td></tr></table></figure>
+
+<p>你只需要放一个html文件放在 ==/html/demo== 下就可以通过==127.0.0.1==访问了，如果你想通过 ==test.cn== 访问的话你需要设置一个hosts</p>
+<blockquote>
+<p>127.0.0.1 test.cn</p>
+</blockquote>
+<p>如果发现出现403的错误的话可能有两种情况</p>
+<ul>
+<li>可能在你的root配置的地址里面找不到对应的index</li>
+<li>还有一种可能就是没有对应的权限了。</li>
+</ul>
+<h2 id="nginx-坑之403错误"><a href="#nginx-坑之403错误" class="headerlink" title="nginx 坑之403错误"></a>nginx 坑之403错误</h2><p>你可以查看一下你要访问的文件夹的对应权限==ll==命令就可以查看当前目录下的所有的权限了，关于权限的修改和设置你可以查看这个文章</p>
+<p><a href="https://blog.csdn.net/x1876631/article/details/70162009/" target="_blank" rel="noopener">mac 查看、修改文件权限的命令</a></p>
+<p>然后之前我是在桌面上建的文件夹，然后就算修改了权限后也不可以访问，是因为他的上一级文件夹没有权限进不来，如果你在最外面的 ==/== 目录下建立文件夹然后nginx就可以访问到，如果你想访问你这个用户下面的文件，你可以用node在你目录下开个服务然后用nginx反向代理过去。</p>
+<h2 id="nginx-反向代理"><a href="#nginx-反向代理" class="headerlink" title="nginx 反向代理"></a>nginx 反向代理</h2><p>nginx的简单的反向代理就很简单</p>
+<p>而且还不会出现资源访问的问题</p>
+<p>首先你需要开一个node服务在8888端口</p>
+<p>可以不需要之前写的root</p>
+<p>然后在server里面加上一段</p>
+<p>然后你就可以直接通过==test.cn==访问到你的node服务了</p>
+<p>记得重启一下nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    # ...前面的代码</span><br><span class="line">    location &#x2F; &#123;</span><br><span class="line">        proxy_pass http:&#x2F;&#x2F;127.0.0.1:8888;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我理解反向代理的作用是，如果你的服务器上有两个项目都需要跑在80端口上，然后你就可以通过nginx配置不同的==server_name==来访问不同的服务，然后还可以解决负载均衡等等的问题</p>
+<p>关于具体的配置你可以看看<a href="https://www.jb51.net/article/78746.htm" target="_blank" rel="noopener">Nginx服务器的反向代理proxy_pass配置方法讲解
+</a></p>
+<h2 id="nginx-解决跨域"><a href="#nginx-解决跨域" class="headerlink" title="nginx 解决跨域"></a>nginx 解决跨域</h2><p>nginx 解决跨域其实就是nginx反向代理的一个实现，他的实现原理是，你的后端跑在==localhost:81==端口，然后你的前端是跑在==localhost:82==端口，当你前端调用后端接口的时候由于端口不同浏览器会报跨域的错误，然后你需要把两个项目跑在同一个端口上才可以，这样你就会有疑问，同样的域名，一个端口怎么能跑两个项目，我们实现的方法是监听一下83端口然后如果你的请求的url是由 ==/api== 开头的就把它发送到81上去，否则就发送到82端口去。</p>
+<p>具体的配置就是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">	# 监听的端口</span><br><span class="line">	listen 83;</span><br><span class="line">	server_name localhost;</span><br><span class="line">    location &#x2F;api &#123;</span><br><span class="line">    	rewrite ^&#x2F;api$ &#x2F; break;</span><br><span class="line">        proxy_pass http:&#x2F;&#x2F;localhost:81;</span><br><span class="line">    &#125;</span><br><span class="line">    location &#x2F; &#123;</span><br><span class="line">        proxy_pass http:&#x2F;&#x2F;localhost:82;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后你的ajax可以这么写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$.get(&#123;</span><br><span class="line">	url: &#39;http:&#x2F;&#x2F;localhost:83&#x2F;api&#39;,</span><br><span class="line">	success: (data) &#x3D;&gt; &#123;</span><br><span class="line">		console.log(data);</span><br><span class="line">	&#125; </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>nginx的配置要说明的是location后面的 <strong>/</strong> 和 <strong>/api</strong> 的意思是拦截url为这两个开头的请求，然后 <strong>rewrite</strong> 是Nginx的URL重写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewrite ^&#x2F;api$ &#x2F; break;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>==rewrite==是关键字</p>
+</li>
+<li><p>第二项是一个正则，我这里是匹配 ==/api== 这个字符串</p>
+</li>
+<li><p>然后第三项是第二项匹配到的正则需要替换成的字符串，我这里的意思是吧 ==/api== 替换成 ==/==</p>
+</li>
+<li><p>然后第四项是一个flag标记</p>
+</li>
+<li><p>flag标记说明：</p>
+<p>  last  #本条规则匹配完成后，继续向下匹配新的location URI规则</p>
+<p>  break  #本条规则匹配完成即终止，不再匹配后面的任何规则</p>
+<p>  redirect  #返回302临时重定向，浏览器地址会显示跳转后的URL地址</p>
+<p>  permanent  #返回301永久重定向，浏览器地址栏会显示跳转后的URL地址</p>
+</li>
+</ul>
+<p>这样我就可以通过==<a href="http://localhost:83/index.html==访问到我的前端界面然后跨域请求到对应的接口了" target="_blank" rel="noopener">http://localhost:83/index.html==访问到我的前端界面然后跨域请求到对应的接口了</a></p>
+<p>参考资料</p>
+<p><a href="https://www.cnblogs.com/renjing/p/6394725.html" target="_blank" rel="noopener">nginx反向代理-解决前端跨域问题</a><br><a href="https://segmentfault.com/a/1190000002797606#articleHeader1" target="_blank" rel="noopener">nginx配置location总结及rewrite规则写法</a></p>
+<p>后来做项目的时候发现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewrite ^&#x2F;api$ &#x2F; break;</span><br></pre></td></tr></table></figure>
+<p>只会吧/api替换成/,/api/data还是请求的/api/data的接口</p>
+<p>然后改成了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewrite ^&#x2F;api&#x2F;(.*)$ &#x2F;$1 break;</span><br></pre></td></tr></table></figure>
+<p>如果/api/后面还有东西，就替换成/加上之前api后面的东西</p>
+<p><a href="http://www.xiedashuaige.cn/bolg2.0/#" target="_blank" rel="noopener">我的博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/file/" rel="tag"># file</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/21/vue%E9%87%87%E7%94%A8history%E8%B7%AF%E7%94%B1%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/" rel="prev" title="vue采用history路由的服务器部署问题">
+      <i class="fa fa-chevron-left"></i> vue采用history路由的服务器部署问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/18/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="Docker学习笔记">
+      Docker学习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-安装"><span class="nav-number">1.</span> <span class="nav-text">nginx 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-基本命令"><span class="nav-number">2.</span> <span class="nav-text">nginx 基本命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-简单配置"><span class="nav-number">3.</span> <span class="nav-text">nginx 简单配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-坑之403错误"><span class="nav-number">4.</span> <span class="nav-text">nginx 坑之403错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-反向代理"><span class="nav-number">5.</span> <span class="nav-text">nginx 反向代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-解决跨域"><span class="nav-number">6.</span> <span class="nav-text">nginx 解决跨域</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="WindStormrage"
+      src="/images/favicon-logo.png">
+  <p class="site-author-name" itemprop="name">WindStormrage</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/WindStormrage" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:695729033@qq.com" title="E-Mail → mailto:695729033@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WindStormrage</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
