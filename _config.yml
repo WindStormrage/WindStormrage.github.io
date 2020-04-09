@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: https://xiedashuaige.cn
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -93,7 +93,8 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+# theme: next
+theme: next-new
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -104,7 +105,35 @@ deploy:
 
 backup:
   type: git
-  theme: next
+  theme: next-new
   message: Back up my xiedashuaige.cn blog
   repository:
     github: git@github.com:WindStormrage/WindStormrage.github.io.git,backup
+
+
+# 页面优化加速
+filter_optimize:
+  enable: false
+  # remove the surrounding comments in each of the bundled files
+  remove_comments: false
+  css:
+    # minify all css files
+    minify: true
+    # bundle loaded css files into one
+    bundle: true
+    # use a script block to load css elements dynamically
+    delivery: true
+    # make specific css content inline into the html page
+    #   - only support the full path
+    #   - default is ['css/main.css']
+    inlines:
+    excludes:
+  js:
+    # minify all js files
+    minify: true
+    # bundle loaded js files into one
+    bundle: true
+    excludes:
+  # set the priority of this plugin,
+  # lower means it will be executed first, default of Hexo is 10
+  priority: 12
