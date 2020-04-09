@@ -1,13 +1,13 @@
 ---
 title: 对vue双向绑定的思考
 date: 2018-05-24 20:27
-tags: vue, "双向绑定"
+tags: [前端, vue, 双向绑定]
 ---
 
-<!--more-->
 
 ### 对于数组
 直接更改数组里面的项的值是不会有view响应的，如：
+<!--more-->
 ```
 <ul>
   <li v-for="item in test">

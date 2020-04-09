@@ -1,13 +1,13 @@
 ---
 title: vue采用history路由的服务器部署问题
 date: 2018-06-21 23:21
-tags: vue, vue-router
+tags: [前端, vue, vue-router]
 ---
 
-<!--more-->
 
 ## 发现部署问题
 在部署的时候发现打开的页面是空白
+<!--more-->
 
 ## 之前部署原理
 之前的页面都是作为静态文件形式打包上传到服务器上

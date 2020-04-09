@@ -1,13 +1,13 @@
 ---
 title: nginx学习笔记
 date: 2018-12-08 15:05
-tags: file
+tags: nginx
 ---
 
-<!--more-->
 
 ## nginx 安装
 直接用brew安装，没有brew的自行安装
+<!--more-->
 > brew install nginx
 ## nginx 基本命令
 可以通过
