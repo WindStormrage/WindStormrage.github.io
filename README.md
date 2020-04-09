@@ -3,6 +3,7 @@
 
 装了依赖后
 ```
+npm run build
 npm run deploy
 ```
 上传网站到master
