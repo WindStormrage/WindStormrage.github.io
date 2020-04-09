@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="zh-CN"><head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -8,10 +10,10 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-logo.png">
   <link rel="mask-icon" href="/images/favicon-logo.png" color="#222">
 
+<link rel="stylesheet" href="/css/main.css">
 
 
-
-
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
@@ -77,13 +79,13 @@
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');</script></head>
+</head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage">
+<body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
     <div class="headband"></div>
 
-    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏">
@@ -160,16 +162,16 @@
     
   
   
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2020/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E9%9C%80%E6%B1%82%E4%B9%8B%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">
 
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon-logo.png">
       <meta itemprop="name" content="WindStormrage">
       <meta itemprop="description" content="">
     </span>
 
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="WindStormrage Blog">
     </span>
       <header class="post-header">
@@ -215,14 +217,14 @@
         <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>本文主要是讲了菜鸡作者（我）在面对文件上传的需求的时候的一些解决方法，如果有问题或者有更改的方法欢迎大家指出。</p>
 <a id="more"></a>
 <h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><p>事情的起因是项目中有个需求是上传文件，然后文件上传大家都知道<strong>直接丢formData里面给后端</strong>就好了</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cosnt formData = <span class="keyword">new</span> FormData(), </span><br><span class="line">formData.append(<span class="string">'file'</span>, file);</span><br><span class="line">    <span class="comment">// 发送文件</span></span><br><span class="line">    <span class="keyword">this</span>.sendFile(formData)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cosnt formData = <span class="keyword">new</span> FormData(), </span><br><span class="line">formData.append(<span class="string">'file'</span>, file);</span><br><span class="line">    <span class="comment">// 发送文件</span></span><br><span class="line">    <span class="keyword">this</span>.sendFile(formData)</span><br></pre></td></tr></table></figure>
 <h2 id="二进制文件流上传"><a href="#二进制文件流上传" class="headerlink" title="二进制文件流上传"></a>二进制文件流上传</h2><p>本以为这样就结束了，但是后来开始联调的时候才发现后端需要的是二进制文件。完蛋没有碰到过这种情况呀，二进制？是要把文件转换成二进制文件么，马上就去查了一下，了解到了<strong>上传文件时input会返回上传的文件的FileList对象，每一个文件是其中的一个File对象，然后有一个FileReader对象可以读取文件，然后他有readAsArrayBuffer()的方法可以把读到的内容转换成ArrayBuffer对象，然后FileReader读取文件是异步的，在读取结束的时候回触发onload事件</strong>通过这些就可以得到下面的代码</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新建一个FileReader对象</span></span><br><span class="line"><span class="keyword">const</span> reader = <span class="keyword">new</span> FileReader()</span><br><span class="line"><span class="comment">// 调用readAsArrayBuffer方法把File转换成ArrayBuffer</span></span><br><span class="line">reader.readAsArrayBuffer(file)</span><br><span class="line"><span class="comment">// 监听转换完成</span></span><br><span class="line">reader.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">    <span class="comment">// binary为得到的二进制文件</span></span><br><span class="line">    <span class="keyword">const</span> binary = <span class="keyword">this</span>.result</span><br><span class="line">    <span class="comment">// 发送文件</span></span><br><span class="line">    <span class="keyword">this</span>.sendBinary(binary)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新建一个FileReader对象</span></span><br><span class="line"><span class="keyword">const</span> reader = <span class="keyword">new</span> FileReader()</span><br><span class="line"><span class="comment">// 调用readAsArrayBuffer方法把File转换成ArrayBuffer</span></span><br><span class="line">reader.readAsArrayBuffer(file)</span><br><span class="line"><span class="comment">// 监听转换完成</span></span><br><span class="line">reader.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// binary为得到的二进制文件</span></span><br><span class="line">    <span class="keyword">const</span> binary = <span class="keyword">this</span>.result</span><br><span class="line">    <span class="comment">// 发送文件</span></span><br><span class="line">    <span class="keyword">this</span>.sendBinary(binary)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>其实在过程中有个小插曲，发送binary给后端的时候一直给我返回格式不对的错误，然后我就试了各种方法，怀疑自己文件类型转换错了，最后才查出是后端的bug…</p>
 <h2 id="大文件上传"><a href="#大文件上传" class="headerlink" title="大文件上传"></a>大文件上传</h2><p>再次以为结束了，后来后端说在他那上传浏览器崩溃了。然后给了我文件，然后我上传了一下发现</p>
 <p><a href="https://postimg.cc/cKVyDxdz" target="_blank" rel="noopener"><img src="https://i.postimg.cc/265kSyMC/WX20200329-000436.png" alt="WX20200329-000436.png"></a></p>
 <p>Chrome上传一个200M的文件就直接崩溃了，后来确认了一下需求需要支持大文件的上传，又开了一个新坑，开始研究大文件一般怎么上传，和后端沟通后，后端那可以提供一个分割文件上传的接口，我可以把文件拆分成2M大小的一个个小片段分开上传。然后通过研究得到前端这边的需要做的是，直接<strong>把之前的文件通过slice进行拆分，通过循环一次一次的发送请求，告诉后端一个开始和结束的请求，和当前文件的编号，后端对拆分的文件进行拼接</strong></p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新建一个FileReader对象</span></span><br><span class="line"><span class="keyword">const</span> reader = <span class="keyword">new</span> FileReader()</span><br><span class="line"><span class="comment">// 调用readAsArrayBuffer方法把File转换成ArrayBuffer</span></span><br><span class="line">reader.readAsArrayBuffer(file)</span><br><span class="line"><span class="comment">// 监听转换完成</span></span><br><span class="line">reader.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">    <span class="comment">// binary为得到的二进制文件</span></span><br><span class="line">    <span class="keyword">const</span> binary = <span class="keyword">this</span>.result</span><br><span class="line">    <span class="comment">// 这里定义拆分后的文件为2M一个</span></span><br><span class="line">    <span class="keyword">const</span> blockSize = <span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span></span><br><span class="line">    <span class="comment">// 如果文件小于2M就直接上传</span></span><br><span class="line">    <span class="keyword">if</span> (file.size &lt;= blockSize) {</span><br><span class="line">        <span class="comment">// 上传文件</span></span><br><span class="line">        <span class="keyword">this</span>.sendBinary(binary)</span><br><span class="line">    } <span class="keyword">else</span> {</span><br><span class="line">        <span class="comment">// 记录分割后的文件的顺序，后端按照顺序进行拼接</span></span><br><span class="line">        <span class="keyword">let</span> num = <span class="number">1</span></span><br><span class="line">        <span class="comment">// 文件的标识，可以随机生产一个随机数，带有这个标识的是同一个文件</span></span><br><span class="line">        <span class="keyword">const</span> id = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line">        <span class="comment">// 当前分割的文件的位置，初始为单个拆分文件的大小</span></span><br><span class="line">        <span class="keyword">let</span> nextSize = blockSize</span><br><span class="line">        <span class="comment">// 循环到分割文件的位置是文件的大小截止</span></span><br><span class="line">        <span class="keyword">while</span> (file.size &gt; nextSize) {</span><br><span class="line">            <span class="comment">// 当前分割的文件的位置，因为在最后一个的时候不一定是2M大小的文件，最后一个位置是文件的大小</span></span><br><span class="line">            nextSize = <span class="built_in">Math</span>.min(num * blockSize, file.size)</span><br><span class="line">            <span class="comment">// 分割文件，上一次的位置到当前文件的位置</span></span><br><span class="line">            <span class="keyword">const</span> slice = binary.slice((num - <span class="number">1</span>) * blockSize, nextSize)</span><br><span class="line">            <span class="comment">// 开始上传</span></span><br><span class="line">            <span class="keyword">const</span> param = <span class="keyword">new</span> FormData()</span><br><span class="line">            <span class="comment">// 传一个文件的序号</span></span><br><span class="line">            param.append(<span class="string">'chunk'</span>, num)</span><br><span class="line">            <span class="comment">// 传分割后的文件</span></span><br><span class="line">            param.append(<span class="string">'slice'</span>, slice)</span><br><span class="line">            <span class="comment">// 传文件的唯一标识</span></span><br><span class="line">            param.append(<span class="string">'id'</span>, id)</span><br><span class="line">            <span class="comment">// 如果是最后一次，传给后端一个结束的标志</span></span><br><span class="line">            <span class="keyword">if</span> (num * blockSize &gt;= file.size) {</span><br><span class="line">                param.append(<span class="string">'status'</span>, <span class="string">'end'</span>)</span><br><span class="line">            }</span><br><span class="line">            num++</span><br><span class="line">            <span class="comment">// 发送请求</span></span><br><span class="line">            <span class="keyword">this</span>.sendFileSlice(param)</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新建一个FileReader对象</span></span><br><span class="line"><span class="keyword">const</span> reader = <span class="keyword">new</span> FileReader()</span><br><span class="line"><span class="comment">// 调用readAsArrayBuffer方法把File转换成ArrayBuffer</span></span><br><span class="line">reader.readAsArrayBuffer(file)</span><br><span class="line"><span class="comment">// 监听转换完成</span></span><br><span class="line">reader.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// binary为得到的二进制文件</span></span><br><span class="line">    <span class="keyword">const</span> binary = <span class="keyword">this</span>.result</span><br><span class="line">    <span class="comment">// 这里定义拆分后的文件为2M一个</span></span><br><span class="line">    <span class="keyword">const</span> blockSize = <span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span></span><br><span class="line">    <span class="comment">// 如果文件小于2M就直接上传</span></span><br><span class="line">    <span class="keyword">if</span> (file.size &lt;= blockSize) &#123;</span><br><span class="line">        <span class="comment">// 上传文件</span></span><br><span class="line">        <span class="keyword">this</span>.sendBinary(binary)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 记录分割后的文件的顺序，后端按照顺序进行拼接</span></span><br><span class="line">        <span class="keyword">let</span> num = <span class="number">1</span></span><br><span class="line">        <span class="comment">// 文件的标识，可以随机生产一个随机数，带有这个标识的是同一个文件</span></span><br><span class="line">        <span class="keyword">const</span> id = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line">        <span class="comment">// 当前分割的文件的位置，初始为单个拆分文件的大小</span></span><br><span class="line">        <span class="keyword">let</span> nextSize = blockSize</span><br><span class="line">        <span class="comment">// 循环到分割文件的位置是文件的大小截止</span></span><br><span class="line">        <span class="keyword">while</span> (file.size &gt; nextSize) &#123;</span><br><span class="line">            <span class="comment">// 当前分割的文件的位置，因为在最后一个的时候不一定是2M大小的文件，最后一个位置是文件的大小</span></span><br><span class="line">            nextSize = <span class="built_in">Math</span>.min(num * blockSize, file.size)</span><br><span class="line">            <span class="comment">// 分割文件，上一次的位置到当前文件的位置</span></span><br><span class="line">            <span class="keyword">const</span> slice = binary.slice((num - <span class="number">1</span>) * blockSize, nextSize)</span><br><span class="line">            <span class="comment">// 开始上传</span></span><br><span class="line">            <span class="keyword">const</span> param = <span class="keyword">new</span> FormData()</span><br><span class="line">            <span class="comment">// 传一个文件的序号</span></span><br><span class="line">            param.append(<span class="string">'chunk'</span>, num)</span><br><span class="line">            <span class="comment">// 传分割后的文件</span></span><br><span class="line">            param.append(<span class="string">'slice'</span>, slice)</span><br><span class="line">            <span class="comment">// 传文件的唯一标识</span></span><br><span class="line">            param.append(<span class="string">'id'</span>, id)</span><br><span class="line">            <span class="comment">// 如果是最后一次，传给后端一个结束的标志</span></span><br><span class="line">            <span class="keyword">if</span> (num * blockSize &gt;= file.size) &#123;</span><br><span class="line">                param.append(<span class="string">'status'</span>, <span class="string">'end'</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            num++</span><br><span class="line">            <span class="comment">// 发送请求</span></span><br><span class="line">            <span class="keyword">this</span>.sendFileSlice(param)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>后来发现还是有问题，看接口文档才知道，这回后端接受的分割后的类型是File类型，emmm没办法，我又找到了一个File的构造器，可以把<strong>通过ArrayBuffer创建一个File对象</strong>。然后去MDN找到了文档。</p>
 <blockquote>
 <p>var myFile = new File(bits, name[, options]);</p>
@@ -230,13 +232,13 @@
 <p>name：USVString，表示文件名称，或者文件路径。</p>
 </blockquote>
 <p>这不就把我得到的slice传过去就好了，然后我就</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const data = new File(slice, 'test.txt')</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const data &#x3D; new File(slice, &#39;test.txt&#39;)</span><br></pre></td></tr></table></figure>
 <p>然后报错</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Uncaught TypeError: Failed to construct 'File': Iterator getter is not callable.</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Uncaught TypeError: Failed to construct &#39;File&#39;: Iterator getter is not callable.</span><br></pre></td></tr></table></figure>
 <p>难道是MDN出错了，然后我仔细观察了一下他的示例，发现他传的参数是一个数组</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var file = new File(["foo"], "foo.txt", {</span><br><span class="line">  type: "text/plain",</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var file &#x3D; new File([&quot;foo&quot;], &quot;foo.txt&quot;, &#123;</span><br><span class="line">  type: &quot;text&#x2F;plain&quot;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>我就试了一下改成数组，没先到就可以了</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const data = new File([slice], 'test.txt')</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const data &#x3D; new File([slice], &#39;test.txt&#39;)</span><br></pre></td></tr></table></figure>
 <p>原来他对<strong>bits</strong>的描述非常容易让人误解，看英文版更容易理解，然后我把他的翻译更改了一下改成了</p>
 <blockquote>
 <p>一个包含ArrayBuffer，ArrayBufferView，Blob，或者 DOMString 对象的 Array — 或者任何这些对象的组合。这是 UTF-8 编码的文件内容。</p>
@@ -280,7 +282,7 @@
     
   
   <div class="comments">
-  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async=""></script>
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
   </div>
   
   
@@ -335,8 +337,9 @@
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="WindStormrage" src="/images/favicon-logo.png">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="WindStormrage"
+      src="/images/favicon-logo.png">
   <p class="site-author-name" itemprop="name">WindStormrage</p>
   <div class="site-description" itemprop="description"></div>
 </div>
@@ -359,7 +362,7 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/WindStormrage" title="GitHub → https://github.com/WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+        <a href="https://github.com/WindStormrage" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
         <a href="mailto:695729033@qq.com" title="E-Mail → mailto:695729033@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
@@ -386,19 +389,19 @@
 
 <div class="copyright">
   
-  © 
+  &copy; 
   <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">WindStormrage</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
   </div>
 
         
 <div class="busuanzi-count">
-  <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
       <span class="post-meta-item-icon">
         <i class="fa fa-user"></i>
@@ -430,43 +433,42 @@
   </div>
 
   
-  
-  
-  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
 
 
+<script src="/js/schemes/muse.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
+<script src="/js/next-boot.js"></script>
 
 
 
 
   
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 
+  
 
-
-<script src="/bundle.js"></script></body></html>
+</body>
+</html>
