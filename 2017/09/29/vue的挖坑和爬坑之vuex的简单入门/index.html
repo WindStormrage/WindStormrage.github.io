@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-logo.png">
+  <link rel="mask-icon" href="/images/favicon-logo.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="首先vuex的中文文档https:&#x2F;&#x2F;vuex.vuejs.org&#x2F;zh-cn&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue的挖坑和爬坑之vuex的简单入门">
+<meta property="og:url" content="https://xiedashuaige.cn/2017/09/29/vue%E7%9A%84%E6%8C%96%E5%9D%91%E5%92%8C%E7%88%AC%E5%9D%91%E4%B9%8Bvuex%E7%9A%84%E7%AE%80%E5%8D%95%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="WindStormrage Blog">
+<meta property="og:description" content="首先vuex的中文文档https:&#x2F;&#x2F;vuex.vuejs.org&#x2F;zh-cn&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-09-29T05:10:00.000Z">
+<meta property="article:modified_time" content="2020-04-09T08:46:57.389Z">
+<meta property="article:author" content="WindStormrage">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="vuex">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xiedashuaige.cn/2017/09/29/vue%E7%9A%84%E6%8C%96%E5%9D%91%E5%92%8C%E7%88%AC%E5%9D%91%E4%B9%8Bvuex%E7%9A%84%E7%AE%80%E5%8D%95%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>vue的挖坑和爬坑之vuex的简单入门 | WindStormrage Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WindStormrage Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2017/09/29/vue%E7%9A%84%E6%8C%96%E5%9D%91%E5%92%8C%E7%88%AC%E5%9D%91%E4%B9%8Bvuex%E7%9A%84%E7%AE%80%E5%8D%95%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon-logo.png">
+      <meta itemprop="name" content="WindStormrage">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WindStormrage Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vue的挖坑和爬坑之vuex的简单入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-29 13:10:00" itemprop="dateCreated datePublished" datetime="2017-09-29T13:10:00+08:00">2017-09-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-09 16:46:57" itemprop="dateModified" datetime="2020-04-09T16:46:57+08:00">2020-04-09</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>首先vuex的中文文档<a href="https://vuex.vuejs.org/zh-cn/" target="_blank" rel="noopener">https://vuex.vuejs.org/zh-cn/</a></p>
+<a id="more"></a>
+<h2 id="首先vuex是什么，官方解释是"><a href="#首先vuex是什么，官方解释是" class="headerlink" title="首先vuex是什么，官方解释是"></a>首先vuex是什么，官方解释是</h2><p>Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。Vuex 也集成到 Vue 的官方调试工具 devtools extension，提供了诸如零配置的 time-travel 调试、状态快照导入导出等高级调试功能。</p>
+<h2 id="我的理解是"><a href="#我的理解是" class="headerlink" title="我的理解是"></a>我的理解是</h2><p>就是vue组件之间的数据管理</p>
+<h2 id="event-bus"><a href="#event-bus" class="headerlink" title="event bus"></a>event bus</h2><p>对于vue组件之间的数据传递，父子之间的简单的传递还算是简单，然后你要在各个组件之间传递的话就不太方便了，有两种解决方案暂时我只接触到了两种，其中一种就是用event bus,在入口js中定义一个bus（巴士）</p>
+<p>new Vue({<br>  el: ‘#app’,<br>  router,<br>  template: ‘<App/>‘,<br>  components: { App },<br>  data: {<br>    Bus: new Vue()<br>  }<br>});</p>
+<p>然后你可以放数据放在bus中</p>
+<p> this.$root.Bus.$emit(‘tab’,-1);</p>
+<p>然后你也可以随时提取</p>
+<p>this.$root.Bus.$on(‘tab’,(data)=&gt;{<br>    console.log(data);<br>})</p>
+<p>你可以理解为全局变量，但是由于设置变量的地方比较随意，然后用的多或者是数据量大的话不利于管理。</p>
+<h2 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a>vuex</h2><p>于是这时候vuex出来了。</p>
+<p>先介绍一下vuex中几个关键点，这张图介绍了vuex的处理机制。</p>
+<p>state：既然vuex是用来储存数据的，那么我们的储存地点就是这里。</p>
+<p>mutations：对数据的处理都是在这里进行。</p>
+<p>actions：专门用来提交mutations的。</p>
+<p>getters：获得到state上的数据的。</p>
+<p>所以总的来说就是建立一个state，然后调用actions来提交mutations处理state中的数据，最后用getters得到state中的数据。</p>
+<p>至于为什么要用actions来提交mutations处理state中的数据，原因是mutation 必须是同步函数，所以通过actions来调用mutations</p>
+<p>首先npm install vuex一下，然后在src里新建一个store的文件夹，用来写vuex的文件，里面创建一个index.js，然后在main.js引入你创建的index.js并在new Vue中声明一下你引入的index文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">import store from &#39;.&#x2F;store&#x2F;index&#39;</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">&#x2F;&#x2F; 把 store 对象提供给 “store” 选项，这可以把 store 的实例注入所有的子组件</span><br><span class="line">  store,</span><br><span class="line">  el: &#39;#app&#39;,</span><br><span class="line">  router,</span><br><span class="line">  template: &#39;&lt;App&#x2F;&gt;&#39;,</span><br><span class="line">  components: &#123; App &#125;</span><br><span class="line">&#125;)</span><br><span class="line">然后你可以在index里面写你的vuex文件了</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">import Vue from &#39;vue&#39;</span><br><span class="line">import Vuex from &#39;vuex&#39;</span><br><span class="line">Vue.use(Vuex);</span><br><span class="line">&#x2F;&#x2F;储存</span><br><span class="line">const state &#x3D; &#123;</span><br><span class="line">　　i: 100</span><br><span class="line">&#125;;</span><br><span class="line">&#x2F;&#x2F;处理state</span><br><span class="line">const mutations &#x3D; &#123;</span><br><span class="line">　　ADD(state) &#123;</span><br><span class="line">　　　　state.i++;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;;</span><br><span class="line">&#x2F;&#x2F;提交mutations</span><br><span class="line">const actions &#x3D; &#123;</span><br><span class="line">　　add : function (&#123;commit, state&#125;) &#123;</span><br><span class="line">　　　　commit(ADD)</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;获得state</span><br><span class="line">const getters &#x3D; &#123;</span><br><span class="line">　　getdata : state &#x3D;&gt; state.notes.i</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 挂载</span><br><span class="line">export default new Vuex.Store(&#123;</span><br><span class="line">　　state,</span><br><span class="line">　　mutations,</span><br><span class="line">　　actions,</span><br><span class="line">　　getters</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p> 然后你在组件中可以调用getters获得对应的值</p>
+<p>this.$store.getters.getdata<br>然后你可以在组件中调用actions</p>
+<p>this.$store.dispatch(‘add’)<br> 以上是对vuex的最简单的一个demo的介绍</p>
+<p>然后个人看到了几个比较好的简单的项目可以看看</p>
+<p><a href="https://github.com/ToWorkit/VUEX" target="_blank" rel="noopener">https://github.com/ToWorkit/VUEX</a></p>
+<p><a href="https://github.com/coligo-io/notes-app-vuejs-vuex" target="_blank" rel="noopener">https://github.com/coligo-io/notes-app-vuejs-vuex</a></p>
+<p>还有的是如果你在actions和mutations中要传递值的话可以</p>
+<p>//调用actions时传值<br>store.dispatch(‘add’, {<br>  data: 10<br>})<br>//调用mutations时传值<br>store.commit(‘increment’, {<br>   data: 10<br>})<br>最后还有一个module讲一下，如果你的Vuex有两个模块要储存的话你可以通过这种方式储存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">const moduleA &#x3D; &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;,</span><br><span class="line">  getters: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const moduleB &#x3D; &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const store &#x3D; new Vuex.Store(&#123;</span><br><span class="line">  modules: &#123;</span><br><span class="line">    a: moduleA,</span><br><span class="line">    b: moduleB</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">store.state.a &#x2F;&#x2F; -&gt; moduleA 的状态</span><br><span class="line">store.state.b &#x2F;&#x2F; -&gt; moduleB 的状态</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/vue/" rel="tag"># vue</a>
+              <a href="/tags/vuex/" rel="tag"># vuex</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/09/26/css%E6%8C%96%E5%9D%91%E7%88%AC%E5%9D%91%E4%B9%8Bdiv%E9%AB%98%E5%AE%BD%E7%9B%B8%E7%AD%89/" rel="prev" title="css挖坑爬坑之div高宽相等">
+      <i class="fa fa-chevron-left"></i> css挖坑爬坑之div高宽相等
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/10/17/%E9%80%9A%E8%BF%87WebSocket%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%81%8A%E5%A4%A9%E5%AE%A4%E5%8A%9F%E8%83%BD/" rel="next" title="通过WebSocket实现一个简单的聊天室功能">
+      通过WebSocket实现一个简单的聊天室功能 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#首先vuex是什么，官方解释是"><span class="nav-number">1.</span> <span class="nav-text">首先vuex是什么，官方解释是</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我的理解是"><span class="nav-number">2.</span> <span class="nav-text">我的理解是</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#event-bus"><span class="nav-number">3.</span> <span class="nav-text">event bus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vuex"><span class="nav-number">4.</span> <span class="nav-text">vuex</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="WindStormrage"
+      src="/images/favicon-logo.png">
+  <p class="site-author-name" itemprop="name">WindStormrage</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/WindStormrage" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:695729033@qq.com" title="E-Mail → mailto:695729033@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WindStormrage</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

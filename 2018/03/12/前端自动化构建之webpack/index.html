@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-logo.png">
+  <link rel="mask-icon" href="/images/favicon-logo.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言学了gulp后马上就开始学了一下webpack，所以马上来谈一下感受，感觉webpack有人说是一个模块化工具，用来和browserify来做比较，我感觉webpack牛逼多了，不但可以把复杂的文件结构打包在一起，而且还可以预编译各种js，css语言，同时可以帮你处理好html，感觉和gulp有的一拼">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端自动化构建之webpack">
+<meta property="og:url" content="https://xiedashuaige.cn/2018/03/12/%E5%89%8D%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%9E%84%E5%BB%BA%E4%B9%8Bwebpack/index.html">
+<meta property="og:site_name" content="WindStormrage Blog">
+<meta property="og:description" content="前言学了gulp后马上就开始学了一下webpack，所以马上来谈一下感受，感觉webpack有人说是一个模块化工具，用来和browserify来做比较，我感觉webpack牛逼多了，不但可以把复杂的文件结构打包在一起，而且还可以预编译各种js，css语言，同时可以帮你处理好html，感觉和gulp有的一拼">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-03-12T12:16:00.000Z">
+<meta property="article:modified_time" content="2020-04-09T08:53:54.717Z">
+<meta property="article:author" content="WindStormrage">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="webpack">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://xiedashuaige.cn/2018/03/12/%E5%89%8D%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%9E%84%E5%BB%BA%E4%B9%8Bwebpack/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>前端自动化构建之webpack | WindStormrage Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WindStormrage Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2018/03/12/%E5%89%8D%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%9E%84%E5%BB%BA%E4%B9%8Bwebpack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon-logo.png">
+      <meta itemprop="name" content="WindStormrage">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WindStormrage Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端自动化构建之webpack
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-12 20:16:00" itemprop="dateCreated datePublished" datetime="2018-03-12T20:16:00+08:00">2018-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-09 16:53:54" itemprop="dateModified" datetime="2020-04-09T16:53:54+08:00">2020-04-09</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>学了gulp后马上就开始学了一下webpack，所以马上来谈一下感受，感觉webpack有人说是一个模块化工具，用来和browserify来做比较，我感觉webpack牛逼多了，不但可以把复杂的文件结构打包在一起，而且还可以预编译各种js，css语言，同时可以帮你处理好html，感觉和gulp有的一拼</p>
+<a id="more"></a>
+<h3 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h3><p>本质上，webpack 是一个现代 JavaScript 应用程序的静态模块打包器，把模块需要的文件打包成一个或多个bundle</p>
+<h3 id="装载"><a href="#装载" class="headerlink" title="装载"></a>装载</h3><p>首先install好webpack-cli和webpack，然后在你的根目录新建一个webpack.config.json的配置文件，webpack的主要配置都在这个里面</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="webpack来打包简单的js文件"><a href="#webpack来打包简单的js文件" class="headerlink" title="webpack来打包简单的js文件"></a>webpack来打包简单的js文件</h4><p>首先先建两个互相有联系的js文件，<br>然后在配置文件中创建一个module.exports把配置类容引出<br>定义一个入口参数entry，一个入口文件为一个值，多个入口文件为一个数组<br>值就是对应的地址<br>然后添加一个出口参数output，为一个对象，里面有一个filename值为输出的文件<br>如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="comment">//入口文件</span></span><br><span class="line">    entry: [<span class="string">'./src/script/main.js'</span>, <span class="string">'./src/script/a.js'</span>],</span><br><span class="line">    <span class="comment">//打包输出</span></span><br><span class="line">    output: &#123;</span><br><span class="line">        filename: <span class="string">'./dist/js/bundle.[chunkhash].js'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中chunkhash是编译当前文件的随机哈希值<br>然后你可以在js中引入css文件，如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'./world.js'</span>)</span><br><span class="line"><span class="comment">//css-loader是让webpack处理.css文件</span></span><br><span class="line"><span class="comment">//style-loader是让css文件插入到html里面</span></span><br><span class="line"><span class="comment">//require('style-loader!css-loader!./style.css')</span></span><br><span class="line"><span class="comment">//用了 --module-bind 'css=style-loader!css-loader'后可以不要每次都处理了</span></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'./style.css'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hello</span> (<span class="params">argument</span>) </span>&#123;</span><br><span class="line">    alert(argument);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hello(<span class="string">'hello world'</span>);</span><br></pre></td></tr></table></figure>
+<p>最后只要在html中引入打包后的文件就好了<br>还有如果在packge.json里面的scripts里面加入运行webpack的命令如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"webpack"</span>: <span class="string">"webpack --module-bind 'css=style-loader!css-loader'"</span></span><br></pre></td></tr></table></figure>
+<pre><code>以后在命令行中只要运行npm run webpack就好了</code></pre><h4 id="webpack对html页面的生成"><a href="#webpack对html页面的生成" class="headerlink" title="webpack对html页面的生成"></a>webpack对html页面的生成</h4><p>前面的demo需要你自己把打包后的文件引入html中，其实也有自动生成html打包后文件的一种方法，加一个plugin（插件）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">    <span class="keyword">new</span> htmlWebpackPlugin(&#123;</span><br><span class="line">        filename: <span class="string">'./dist/bundle.index.html'</span>,</span><br><span class="line">        template: <span class="string">'index.html'</span>,</span><br><span class="line">        inject: <span class="string">'head'</span>,</span><br><span class="line">        title: <span class="string">'demo'</span></span><br><span class="line">    &#125;)</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>htmlWebpackPlugin是打包后可以直接重新组合html的一个插件<br>然后如果是单页面的程序，你可以new一个htmlWebpackPlugin，<br>如果是多页面的程序你就需要多new几个htmlWebpackPlugin<br>你也可以从配置文件传参到html页面，<br>htmlWebpackPlugin的构造方法中的参数可以在html通过模板语言获取</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%= htmlWebpackPlugin.options.title %&gt;</span><br></pre></td></tr></table></figure>
+<p>你还可以在output中设置publicPath，从而使上线后html中引入外部地址而不只是相对位置<br>htmlWebpackPlugin也有很多配置，如压缩html<br>如果是多页面多个htmlWebpackPlugin，可以把entry写成一个对象，然后配置chunks，来指定打包哪个js</p>
+<h4 id="webpack打包预处理其他语言"><a href="#webpack打包预处理其他语言" class="headerlink" title="webpack打包预处理其他语言"></a>webpack打包预处理其他语言</h4><p>前面只是对html，js，css的打包，而接下来我要介绍的是对各种语言各种文件进行预处理<br>这里用到的是webpack的Loader<br>这里先示范对js的处理<br>你需要把es6代码编译成es5的<br>所以你需要用到babel<br>    npm install babel-loader babel-core babel-preset-env webpack –save-dev<br>    然后你需要配置webpack</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">        &#123;</span><br><span class="line">            test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">            loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">query: &#123;</span><br><span class="line">	presets: [<span class="string">'latest'</span>]</span><br><span class="line">&#125;</span><br><span class="line">            <span class="comment">//path.resolve(__dirname, )</span></span><br><span class="line">            <span class="comment">//项目运行路径</span></span><br><span class="line">            exclude: path.resolve(__dirname, <span class="string">'node_modules'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>这句配置的意思就是把后缀名为js的文件用babel-loader处理<br>然后其他配置也是一样的</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>我这里只是简单的对webpack进行简单的配置，其实还有很多牛逼的配置，以后慢慢学</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/webpack/" rel="tag"># webpack</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/03/07/%E5%89%8D%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%9E%84%E5%BB%BA%E4%B9%8Bgulp/" rel="prev" title="前端自动化构建之gulp">
+      <i class="fa fa-chevron-left"></i> 前端自动化构建之gulp
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/07/React%20Router%E7%AE%80%E5%8D%95Demo/" rel="next" title="React Router简单Demo">
+      React Router简单Demo <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本介绍"><span class="nav-number">2.</span> <span class="nav-text">基本介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#装载"><span class="nav-number">3.</span> <span class="nav-text">装载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#webpack来打包简单的js文件"><span class="nav-number">4.1.</span> <span class="nav-text">webpack来打包简单的js文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#webpack对html页面的生成"><span class="nav-number">4.2.</span> <span class="nav-text">webpack对html页面的生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#webpack打包预处理其他语言"><span class="nav-number">4.3.</span> <span class="nav-text">webpack打包预处理其他语言</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="WindStormrage"
+      src="/images/favicon-logo.png">
+  <p class="site-author-name" itemprop="name">WindStormrage</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/WindStormrage" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:695729033@qq.com" title="E-Mail → mailto:695729033@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WindStormrage</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

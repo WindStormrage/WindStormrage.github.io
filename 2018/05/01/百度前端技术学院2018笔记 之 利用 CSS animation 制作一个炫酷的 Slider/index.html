@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-logo.png">
+  <link rel="mask-icon" href="/images/favicon-logo.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言题目地址 利用 CSS animation 制作一个炫酷的 Slider">
+<meta property="og:type" content="article">
+<meta property="og:title" content="百度前端技术学院2018笔记 之 利用 CSS animation 制作一个炫酷的 Slider">
+<meta property="og:url" content="https://xiedashuaige.cn/2018/05/01/%E7%99%BE%E5%BA%A6%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%AD%A6%E9%99%A22018%E7%AC%94%E8%AE%B0%20%E4%B9%8B%20%E5%88%A9%E7%94%A8%20CSS%20animation%20%E5%88%B6%E4%BD%9C%E4%B8%80%E4%B8%AA%E7%82%AB%E9%85%B7%E7%9A%84%20Slider/index.html">
+<meta property="og:site_name" content="WindStormrage Blog">
+<meta property="og:description" content="前言题目地址 利用 CSS animation 制作一个炫酷的 Slider">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s18.postimg.cc/kefme116h/QQ_20180501174551.png">
+<meta property="og:image" content="https://s18.postimg.cc/9euf2oau1/image.png">
+<meta property="article:published_time" content="2018-05-01T10:38:00.000Z">
+<meta property="article:modified_time" content="2020-04-09T08:39:09.302Z">
+<meta property="article:author" content="WindStormrage">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="css">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s18.postimg.cc/kefme116h/QQ_20180501174551.png">
+
+<link rel="canonical" href="https://xiedashuaige.cn/2018/05/01/%E7%99%BE%E5%BA%A6%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%AD%A6%E9%99%A22018%E7%AC%94%E8%AE%B0%20%E4%B9%8B%20%E5%88%A9%E7%94%A8%20CSS%20animation%20%E5%88%B6%E4%BD%9C%E4%B8%80%E4%B8%AA%E7%82%AB%E9%85%B7%E7%9A%84%20Slider/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>百度前端技术学院2018笔记 之 利用 CSS animation 制作一个炫酷的 Slider | WindStormrage Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WindStormrage Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2018/05/01/%E7%99%BE%E5%BA%A6%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%AD%A6%E9%99%A22018%E7%AC%94%E8%AE%B0%20%E4%B9%8B%20%E5%88%A9%E7%94%A8%20CSS%20animation%20%E5%88%B6%E4%BD%9C%E4%B8%80%E4%B8%AA%E7%82%AB%E9%85%B7%E7%9A%84%20Slider/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon-logo.png">
+      <meta itemprop="name" content="WindStormrage">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WindStormrage Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          百度前端技术学院2018笔记 之 利用 CSS animation 制作一个炫酷的 Slider
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-01 18:38:00" itemprop="dateCreated datePublished" datetime="2018-05-01T18:38:00+08:00">2018-05-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-09 16:39:09" itemprop="dateModified" datetime="2020-04-09T16:39:09+08:00">2020-04-09</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>题目地址</p>
+<p><a href="http://ife.baidu.com/course/detail/id/33" target="_blank" rel="noopener">利用 CSS animation 制作一个炫酷的 Slider</a></p>
+<a id="more"></a>
+
+
+<h2 id="思路整理"><a href="#思路整理" class="headerlink" title="思路整理"></a>思路整理</h2><p>首先页面包含三种东西</p>
+<ul>
+<li>一个是type为radio的input其实就是单选框</li>
+<li>二是每个单选框对应的label</li>
+<li>三是你要用作背景的每个图片</li>
+</ul>
+<p>然后具体实现思路是你点击每个label然后出现对应的图片</p>
+<h2 id="基本布局"><a href="#基本布局" class="headerlink" title="基本布局"></a>基本布局</h2><p>首先是对界面进行布局</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;page&quot;&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;slider&quot;&gt;</span><br><span class="line">&lt;input id&#x3D;&quot;img1&quot; name&#x3D;&quot;img&quot; type&#x3D;&quot;radio&quot; class&#x3D;&quot;view&quot; checked&gt;</span><br><span class="line">&lt;input id&#x3D;&quot;img2&quot; name&#x3D;&quot;img&quot; type&#x3D;&quot;radio&quot; class&#x3D;&quot;view&quot;&gt;</span><br><span class="line">&lt;input id&#x3D;&quot;img3&quot; name&#x3D;&quot;img&quot; type&#x3D;&quot;radio&quot; class&#x3D;&quot;view&quot;&gt;</span><br><span class="line">&lt;input id&#x3D;&quot;img4&quot; name&#x3D;&quot;img&quot; type&#x3D;&quot;radio&quot; class&#x3D;&quot;view&quot;&gt;</span><br><span class="line">&lt;input id&#x3D;&quot;img5&quot; name&#x3D;&quot;img&quot; type&#x3D;&quot;radio&quot; class&#x3D;&quot;view&quot;&gt;</span><br><span class="line">&lt;label for&#x3D;&quot;img1&quot; class&#x3D;&quot;img1&quot;&gt;&lt;&#x2F;label&gt;</span><br><span class="line">&lt;label for&#x3D;&quot;img2&quot; class&#x3D;&quot;img2&quot;&gt;&lt;&#x2F;label&gt;</span><br><span class="line">&lt;label for&#x3D;&quot;img3&quot; class&#x3D;&quot;img3&quot;&gt;&lt;&#x2F;label&gt;</span><br><span class="line">&lt;label for&#x3D;&quot;img4&quot; class&#x3D;&quot;img4&quot;&gt;&lt;&#x2F;label&gt;</span><br><span class="line">&lt;label for&#x3D;&quot;img5&quot; class&#x3D;&quot;img5&quot;&gt;&lt;&#x2F;label&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;image&quot;&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;001.jpg&quot;&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;002.jpg&quot;&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;003.jpg&quot;&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;004.jpg&quot;&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;005.jpg&quot;&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">* &#123;</span><br><span class="line">margin: 0;</span><br><span class="line">padding: 0;</span><br><span class="line">&#125;</span><br><span class="line">html, body &#123;</span><br><span class="line">height: 100%;</span><br><span class="line">width: 100%;</span><br><span class="line">overflow: hidden;</span><br><span class="line">&#125;</span><br><span class="line">.page &#123;</span><br><span class="line">height: 100%;</span><br><span class="line">width: 100%;</span><br><span class="line">background-color: yellow;</span><br><span class="line">&#125;</span><br><span class="line">.slider &#123;</span><br><span class="line">height: 100%;</span><br><span class="line">width: 100%;</span><br><span class="line">display: flex;</span><br><span class="line">justify-content: center;</span><br><span class="line">align-items: flex-end;</span><br><span class="line">&#125;</span><br><span class="line">.image img &#123;</span><br><span class="line">height: 100%;</span><br><span class="line">width: 100%;</span><br><span class="line">position: fixed;</span><br><span class="line">left:0;</span><br><span class="line">top: 0;</span><br><span class="line">&#125;</span><br><span class="line">label &#123;</span><br><span class="line">width: 15%;</span><br><span class="line">height: 130px;</span><br><span class="line">background-color: red;</span><br><span class="line">margin-bottom: 50px;</span><br><span class="line">margin-left: 10px;</span><br><span class="line">margin-right: 10px;</span><br><span class="line">filter: brightness(0.8);</span><br><span class="line">cursor: pointer;</span><br><span class="line">z-index: 10;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;*去除单选框*&#x2F;</span><br><span class="line">.view&#123;</span><br><span class="line">display: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>布局没什么要说的，主要是注意一下几点</p>
+<ul>
+<li>html设置成100%使整个页面全屏</li>
+<li>下面那些窗口我用的是flex布局</li>
+<li>然后所有的图片都是100%然后相对浏览器定位一下</li>
+<li>label作为我们的选择窗口，对input要设置display:none把他隐藏掉</li>
+</ul>
+<p>然后大概的效果是<br><a href="https://postimg.cc/image/7zsudp9o5/" target="_blank" rel="noopener"><img src="https://s18.postimg.cc/kefme116h/QQ_20180501174551.png" alt="QQ_20180501174551.png"></a></p>
+<h2 id="添加下面label的图片"><a href="#添加下面label的图片" class="headerlink" title="添加下面label的图片"></a>添加下面label的图片</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">label.img1 &#123;</span><br><span class="line">background-image: url(&quot;001.jpg&quot;);</span><br><span class="line">background-size: 100% 100%;</span><br><span class="line">&#125;</span><br><span class="line">label.img2 &#123; &#125;</span><br><span class="line">label.img3 &#123; &#125;</span><br><span class="line">label.img4 &#123; &#125;</span><br><span class="line">label.img5 &#123; &#125;</span><br></pre></td></tr></table></figure>
+<p>很简单就是作为背景图片添加到label上面</p>
+<p>效果<br><a href="https://postimg.cc/image/jc5fvqifp/" target="_blank" rel="noopener"><img src="https://s18.postimg.cc/9euf2oau1/image.png" alt="image.png"></a><br>然后需要鼠标放上去的效果，很简单</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">label:hover&#123;</span><br><span class="line">filter: brightness(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="加动画"><a href="#加动画" class="headerlink" title="加动画"></a>加动画</h2><p>开始重点了首先写keyframes，这个根据excel表来写就可以了，篇幅太大，我只展示一个</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@keyframes img1 &#123;</span><br><span class="line">from &#123;</span><br><span class="line">left: -500px;</span><br><span class="line">&#125;</span><br><span class="line">to &#123;</span><br><span class="line">left: 0;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">@keyframes img2 &#123; &#125;</span><br><span class="line">@keyframes img3 &#123; &#125;</span><br><span class="line">@keyframes img4 &#123; &#125;</span><br><span class="line">@keyframes img5 &#123; &#125;</span><br></pre></td></tr></table></figure>
+<p>然后就是加checked效果，就是选择了后就产生动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.view:nth-child(1):checked ~ .image img:nth-child(1) &#123;</span><br><span class="line">animation: img1 .5s ease-out;</span><br><span class="line">display:block;</span><br><span class="line">opacity: 1;</span><br><span class="line">z-index: 4;</span><br><span class="line">&#125;</span><br><span class="line">.view:nth-child(2):checked ~ .image img:nth-child(2) &#123; &#125;</span><br><span class="line">.view:nth-child(3):checked ~ .image img:nth-child(3) &#123; &#125;</span><br><span class="line">.view:nth-child(4):checked ~ .image img:nth-child(4) &#123; &#125;</span><br><span class="line">.view:nth-child(5):checked ~ .image img:nth-child(5) &#123; &#125;</span><br></pre></td></tr></table></figure>
+<p>就是点击了这个找到他兄弟节点image然后他的对应个数的子元素来添加动画<br>然后大概的效果就出来了</p>
+<h2 id="你以为这样就成功了？"><a href="#你以为这样就成功了？" class="headerlink" title="你以为这样就成功了？"></a>你以为这样就成功了？</h2><p>完成上面的后你就有了一个基本的实现了，但是在你玩的时候你会发现一个bug点击一个新的label然后背景马上变成最后一张图然后在这张图的基础上出现新的图片。按道理之前的那张图应该保留然后出现新的图片。所以还要加上</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.view:not(:checked) ~ .image img&#123;</span><br><span class="line">animation: oncheck 1s linear;</span><br><span class="line">&#125;</span><br><span class="line">@keyframes oncheck &#123;</span><br><span class="line">0% &#123;</span><br><span class="line">opacity: 1;</span><br><span class="line">z-index: 3;</span><br><span class="line">&#125;</span><br><span class="line">100% &#123;</span><br><span class="line">opacity: 1;</span><br><span class="line">z-index: 3;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在最开始的时候所有层次都是3，初始选中的那个是4</li>
+<li>在最开始所有没选中的都经历了下面的动画，保持1s的z-index: 3， 过了一秒钟后都保持到层次是2</li>
+<li>然后你选择一张图片，这张图片从2变成4，同时开始动画</li>
+<li>你之前选中的图片从选中到未选中，因为是新来到未选中的，所以就会执行一次未选中的动画，也就是保持1s的z-index: 3</li>
+<li>这样就实现了上一张图片保持不动等新的图片来了后再恢复<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>在最开始自己动手写的时候是用的div，然后div没有点击这个效果只有hover，所以之做了一个非常粗糙的。<br>然后交了作业后看到好多同学是用的js来实现的，感觉js实现是比较简单，然后一般都可以写出来的。<br>然后看了很多的作业后发现有位大佬采用单选框的特性来写，打开了我的新世界，然后我就参考大佬的完成了作业。<br>附上我的代码地址<br><a href="https://github.com/WindStormrage/IFE2018/blob/master/css/demo6/css-6.html" target="_blank" rel="noopener">代码</a><br>附上我的效果地址<br><a href="http://htmlpreview.github.io/?https://github.com/WindStormrage/IFE2018/blob/master/css/demo6/css-6.html" target="_blank" rel="noopener">效果</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/css/" rel="tag"># css</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/08/%E4%BA%8C%E5%88%B7Redux%E7%AC%94%E8%AE%B0/" rel="prev" title="二刷Redux笔记">
+      <i class="fa fa-chevron-left"></i> 二刷Redux笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/19/%E5%89%8D%E7%AB%AF%E6%98%9F%E8%AE%A1%E5%88%92%E4%B9%8B%E9%AB%98%E5%A4%8D%E7%94%A8%E7%9A%84%E7%BB%84%E4%BB%B6%E7%9A%84%E8%AE%BE%E8%AE%A1/" rel="next" title="前端星计划之高复用的组件的设计">
+      前端星计划之高复用的组件的设计 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路整理"><span class="nav-number">2.</span> <span class="nav-text">思路整理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本布局"><span class="nav-number">3.</span> <span class="nav-text">基本布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加下面label的图片"><span class="nav-number">4.</span> <span class="nav-text">添加下面label的图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加动画"><span class="nav-number">5.</span> <span class="nav-text">加动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#你以为这样就成功了？"><span class="nav-number">6.</span> <span class="nav-text">你以为这样就成功了？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="WindStormrage"
+      src="/images/favicon-logo.png">
+  <p class="site-author-name" itemprop="name">WindStormrage</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/WindStormrage" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:695729033@qq.com" title="E-Mail → mailto:695729033@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WindStormrage</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

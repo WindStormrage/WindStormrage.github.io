@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-logo.png">
+  <link rel="mask-icon" href="/images/favicon-logo.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言感觉这次去北京参加的前端星计划，收获非常的大，特别是月影大大讲的js课程，让我感觉再次之前根本就没有学到js的精髓，一直都是在为了完成某个页面而去写这个页面，根本没有去考虑这个页面接下来的维护，所有的变量全部都耦合在一起，为了改一个点，你需要该无数地方的代码。然后在更多的时候都是在写重复的代码，根本没有考虑到组件的复用的问题。然后对es6很多新的方法都没有接触过。总而言之，就是自己太菜了，还要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端星计划之高复用的组件的设计">
+<meta property="og:url" content="https://xiedashuaige.cn/2018/05/19/%E5%89%8D%E7%AB%AF%E6%98%9F%E8%AE%A1%E5%88%92%E4%B9%8B%E9%AB%98%E5%A4%8D%E7%94%A8%E7%9A%84%E7%BB%84%E4%BB%B6%E7%9A%84%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="WindStormrage Blog">
+<meta property="og:description" content="前言感觉这次去北京参加的前端星计划，收获非常的大，特别是月影大大讲的js课程，让我感觉再次之前根本就没有学到js的精髓，一直都是在为了完成某个页面而去写这个页面，根本没有去考虑这个页面接下来的维护，所有的变量全部都耦合在一起，为了改一个点，你需要该无数地方的代码。然后在更多的时候都是在写重复的代码，根本没有考虑到组件的复用的问题。然后对es6很多新的方法都没有接触过。总而言之，就是自己太菜了，还要">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://p4.ssl.qhimg.com/t013d3c39d0789ff504.png">
+<meta property="og:image" content="https://s31.postimg.cc/5sjguwpzf/image.png">
+<meta property="og:image" content="https://s31.postimg.cc/f1ln50jfv/image.png">
+<meta property="article:published_time" content="2018-05-19T14:25:00.000Z">
+<meta property="article:modified_time" content="2020-04-09T08:35:54.496Z">
+<meta property="article:author" content="WindStormrage">
+<meta property="article:tag" content="前端星">
+<meta property="article:tag" content="组件">
+<meta property="article:tag" content="前端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p4.ssl.qhimg.com/t013d3c39d0789ff504.png">
+
+<link rel="canonical" href="https://xiedashuaige.cn/2018/05/19/%E5%89%8D%E7%AB%AF%E6%98%9F%E8%AE%A1%E5%88%92%E4%B9%8B%E9%AB%98%E5%A4%8D%E7%94%A8%E7%9A%84%E7%BB%84%E4%BB%B6%E7%9A%84%E8%AE%BE%E8%AE%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>前端星计划之高复用的组件的设计 | WindStormrage Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WindStormrage Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2018/05/19/%E5%89%8D%E7%AB%AF%E6%98%9F%E8%AE%A1%E5%88%92%E4%B9%8B%E9%AB%98%E5%A4%8D%E7%94%A8%E7%9A%84%E7%BB%84%E4%BB%B6%E7%9A%84%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon-logo.png">
+      <meta itemprop="name" content="WindStormrage">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WindStormrage Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端星计划之高复用的组件的设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-19 22:25:00" itemprop="dateCreated datePublished" datetime="2018-05-19T22:25:00+08:00">2018-05-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-09 16:35:54" itemprop="dateModified" datetime="2020-04-09T16:35:54+08:00">2020-04-09</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>感觉这次去北京参加的前端星计划，收获非常的大，特别是月影大大讲的js课程，让我感觉再次之前根本就没有学到js的精髓，一直都是在为了完成某个页面而去写这个页面，根本没有去考虑这个页面接下来的维护，所有的变量全部都耦合在一起，为了改一个点，你需要该无数地方的代码。然后在更多的时候都是在写重复的代码，根本没有考虑到组件的复用的问题。然后对es6很多新的方法都没有接触过。总而言之，就是自己太菜了，还要加把劲的学习。</p>
+<a id="more"></a>
+<h2 id="轮播图组件实现大概思想"><a href="#轮播图组件实现大概思想" class="headerlink" title="轮播图组件实现大概思想"></a>轮播图组件实现大概思想</h2><h3 id="轮播组件之结构设计"><a href="#轮播组件之结构设计" class="headerlink" title="轮播组件之结构设计"></a>轮播组件之结构设计</h3><p>在编写一个组件的时候你先需要把组件的样式给写出来，比如说，我们要做一个轮播的组件，然后就是几张图片叠加在一起，需要哪张图片就显示哪张图片，这个是基础的样式。</p>
+<ol>
+<li>图片结构是一个列表型结构，所以主体用</li>
+<li>使用 css 绝对定位将图片重叠在同一个位置</li>
+<li>轮播图切换的状态使用修饰符（modifier）</li>
+<li>轮播图的切换动画使用 css transition<h3 id="轮播组件之API设计"><a href="#轮播组件之API设计" class="headerlink" title="轮播组件之API设计"></a>轮播组件之API设计</h3>在你想好要做组件之前，你需要对这个组件进行api的设置。建一个类，然后在类中写各种需要的方法。<br><img src="https://p4.ssl.qhimg.com/t013d3c39d0789ff504.png" alt="image"><h3 id="轮播组件之控制流设计"><a href="#轮播组件之控制流设计" class="headerlink" title="轮播组件之控制流设计"></a>轮播组件之控制流设计</h3>在类之中的方法之间还是会有一定的耦合，这样的话可以采用自定义事件的方法，只需要绑定事件就可以</li>
+</ol>
+<p>控制结构</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;a class&#x3D;&quot;slide-list__next&quot;&gt;&lt;&#x2F;a&gt;</span><br><span class="line">&lt;a class&#x3D;&quot;slide-list__previous&quot;&gt;&lt;&#x2F;a&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;slide-list__control&quot;&gt;</span><br><span class="line">    &lt;span class&#x3D;&quot;slide-list__control-buttons--selected&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">    &lt;span class&#x3D;&quot;slide-list__control-buttons&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">    &lt;span class&#x3D;&quot;slide-list__control-buttons&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">    &lt;span class&#x3D;&quot;slide-list__control-buttons&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+<p>自定义事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const detail &#x3D; &#123;index: idx&#125;</span><br><span class="line">const event &#x3D; new CustomEvent(&#39;slide&#39;, &#123;bubbles:true, detail&#125;)</span><br><span class="line">this.container.dispatchEvent(event)</span><br></pre></td></tr></table></figure>
+<h3 id="轮播图之各种优化"><a href="#轮播图之各种优化" class="headerlink" title="轮播图之各种优化"></a>轮播图之各种优化</h3><p>在完成上面的后你还可以进行各种优化，比如说，依赖注入，把每一个小插件作为一个依赖注入到组件中，需要这个依赖就注入一下就好，不需要就不要管他。代码也不会报错。然后你还可以进行插件化和模版化把每个依赖的小插件的html代码写在js中，只有使用了这个插件才会渲染这段代码。</p>
+<h2 id="拖动条组件的设计"><a href="#拖动条组件的设计" class="headerlink" title="拖动条组件的设计"></a>拖动条组件的设计</h2><h3 id="样式设计"><a href="#样式设计" class="headerlink" title="样式设计"></a>样式设计</h3><p>大概写出来是这个样子，左边是输入框，通过输入框输入可以改变右边的进度，然后右边是可以拖动的拖动条，拖动后可以改变左边的输入框的值。</p>
+<p><img src="https://s31.postimg.cc/5sjguwpzf/image.png" alt="image"></p>
+<h3 id="API设计"><a href="#API设计" class="headerlink" title="API设计"></a>API设计</h3><p>这个组件大概包括以下的几个接口</p>
+<p><img src="https://s31.postimg.cc/f1ln50jfv/image.png" alt="image.png"></p>
+<h3 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h3><p>由于需要数据双向绑定，这里使用的方法是，在你改变数据的时候不是直接改变数据，而是调用setData方法来改变数据，调用setData方法里面会调用数据的渲染方法，就和小程序一样，这样改变数据才会激活视图的更新。</p>
+<p>然后clickDot是实现点击小圆点来拖动的效果。对小圆点设置一个mousedown事件，发生按下去的事件后对窗口设置一个mousemove事件随时改变小圆点的位置，当松开的时候就清楚mousemove事件。</p>
+<p>同时在小圆点动的时候激活一个自定义的移动事件，为了响应的更改input中的数据。</p>
+<p>改变进度和小圆点的位置的时候，全部依赖的是定义的数据，所以渲染界面只需要setData一下就可以了。</p>
+<p>然后对于输入框，如果界面改变了，就会激活自定义事件，监听一下，然后通过getPercentage来获得当前的数据。如果输入框里面的值变了，然后调用setData方法就好了。</p>
+<h3 id="总结反思"><a href="#总结反思" class="headerlink" title="总结反思"></a>总结反思</h3><p>这是第一次使用类的方式来写组件，基本实现了数据的双向绑定，然后在new的时候你可以配置一些基本的参数，然后还学会了自定义事件，在此之前是通过回调函数来实现的。但是还是有许多需要改进的地方，组件还可以细分成几个小的插件，在新建的时候就可以通过依赖注入的方式来注入想要的插件</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><h5 id="html"><a href="#html" class="headerlink" title="html"></a>html</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;control&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;sensitivity&quot; id&#x3D;&quot;sensitivity&quot;&gt;</span><br><span class="line">        &lt;div class&#x3D;&quot;line&quot; id&#x3D;&quot;line&quot;&gt;</span><br><span class="line">            &lt;div class&#x3D;&quot;progress&quot; id&#x3D;&quot;progress&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">        &lt;div class&#x3D;&quot;dot&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+<h5 id="css"><a href="#css" class="headerlink" title="css"></a>css</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">*&#123;</span><br><span class="line">    margin: 0;</span><br><span class="line">    padding: 0;</span><br><span class="line">&#125;</span><br><span class="line">.sensitivity &#123;</span><br><span class="line">    width: 100px;</span><br><span class="line">    position: relative;</span><br><span class="line">&#125;</span><br><span class="line">.line &#123;</span><br><span class="line">    width: 100%;</span><br><span class="line">    height: 2px;</span><br><span class="line">    background-color: #cccccc;</span><br><span class="line">    border-radius: 1px;</span><br><span class="line">    overflow: hidden;</span><br><span class="line">&#125;</span><br><span class="line">.progress &#123;</span><br><span class="line">    height: 2px;</span><br><span class="line">    width: 0;</span><br><span class="line">    background-color: #57A3F3;</span><br><span class="line">    -webkit-transition: all .2s;</span><br><span class="line">    -moz-transition: all .2s;</span><br><span class="line">    -ms-transition: all .2s;</span><br><span class="line">    -o-transition: all .2s;</span><br><span class="line">    transition: all .2s;</span><br><span class="line">&#125;</span><br><span class="line">.dot &#123;</span><br><span class="line">    cursor: pointer;</span><br><span class="line">    height: 6px;</span><br><span class="line">    width: 6px;</span><br><span class="line">    border: 2px solid #57A3F3;</span><br><span class="line">    box-sizing: border-box;</span><br><span class="line">    background-color: #ffffff;</span><br><span class="line">    border-radius: 50%;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: -2px;</span><br><span class="line">    left:  -3px;</span><br><span class="line">    -webkit-transition: all .2s;</span><br><span class="line">    -moz-transition: all .2s;</span><br><span class="line">    -ms-transition: all .2s;</span><br><span class="line">    -o-transition: all .2s;</span><br><span class="line">    transition: all .2s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.dot:hover &#123;</span><br><span class="line">    cursor: pointer;</span><br><span class="line">    border: 1px solid #57A3F3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="js-滑动类"><a href="#js-滑动类" class="headerlink" title="js-滑动类"></a>js-滑动类</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">class Slide &#123;</span><br><span class="line">	constructor(dot, progress, father) &#123;</span><br><span class="line">		this.data &#x3D; 0;</span><br><span class="line">		&#x2F;&#x2F;判断是否存在</span><br><span class="line">		this.dot &#x3D; dot;</span><br><span class="line">		this.progress &#x3D; progress;</span><br><span class="line">		&#x2F;&#x2F;父组件</span><br><span class="line">		this.father &#x3D; father;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;设置数据</span><br><span class="line">	setData(data) &#123;</span><br><span class="line">		this.data &#x3D; data;</span><br><span class="line">		this.setPercentage()</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;渲染方法</span><br><span class="line">	render() &#123;</span><br><span class="line">		this.clickDot();</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;所有监听事件来控制拖动条</span><br><span class="line">	clickDot() &#123;</span><br><span class="line">		let sensitivity &#x3D; this.father.querySelector(&quot;.sensitivity&quot;);</span><br><span class="line">		let dot &#x3D; this.father.querySelector(&quot;.sensitivity .dot&quot;);</span><br><span class="line">		&#x2F;&#x2F;自定义事件，通过监听事件来重新渲染dom</span><br><span class="line">		const slideEvent &#x3D; new CustomEvent(&quot;slide&quot;);</span><br><span class="line"></span><br><span class="line">		dot.addEventListener(&quot;mousedown&quot;, (e) &#x3D;&gt; &#123;</span><br><span class="line">			document.onmousemove &#x3D; (e) &#x3D;&gt; &#123;</span><br><span class="line">				&#x2F;&#x2F;设置data</span><br><span class="line">				this.setData((e.clientX - sensitivity.offsetLeft) &#x2F; sensitivity.offsetWidth * 100);</span><br><span class="line">				document.dispatchEvent(slideEvent);</span><br><span class="line">			&#125;;</span><br><span class="line">			document.onmouseup &#x3D; () &#x3D;&gt; &#123;</span><br><span class="line">				document.onmousemove &#x3D; null;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;设置百分数来改变进度</span><br><span class="line">	setPercentage() &#123;</span><br><span class="line">		if (this.data &lt; 0) &#123;</span><br><span class="line">			this.data &#x3D; 0;</span><br><span class="line">		&#125;</span><br><span class="line">		if (this.data &gt; 100) &#123;</span><br><span class="line">			this.data &#x3D; 100;</span><br><span class="line">		&#125;</span><br><span class="line">		let sensitivityWidth &#x3D; this.father.querySelector(&quot;.sensitivity&quot;).offsetWidth;</span><br><span class="line"></span><br><span class="line">		if (this.dot) &#123;</span><br><span class="line">			this.setDot(this.data * sensitivityWidth * 0.01 - 3 + &#39;px&#39;);</span><br><span class="line">		&#125;</span><br><span class="line">		if (this.progress) &#123;</span><br><span class="line">			this.setProgress(this.data * sensitivityWidth * 0.01 + &quot;px&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;得到当前的百分数</span><br><span class="line">	getPercentage() &#123;</span><br><span class="line">		return this.data;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;设置点的位置</span><br><span class="line">	setDot(position) &#123;</span><br><span class="line">		let dot &#x3D; this.father.querySelector(&quot;.sensitivity .dot&quot;);</span><br><span class="line">		if (dot) &#123;</span><br><span class="line">			dot.style.left &#x3D; position;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;设置进度的位置</span><br><span class="line">	setProgress(position) &#123;</span><br><span class="line">		let progress &#x3D; this.father.querySelector(&quot;.sensitivity .progress&quot;);</span><br><span class="line">		if (progress) &#123;</span><br><span class="line">			progress.style.width &#x3D; position;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="js-new"><a href="#js-new" class="headerlink" title="js-new"></a>js-new</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">   let father &#x3D; document.querySelector(&quot;#control&quot;);</span><br><span class="line">let a &#x3D; new Slide(true, true, father);</span><br><span class="line">a.render();</span><br><span class="line"></span><br><span class="line">document.addEventListener(&quot;slide&quot;, (e) &#x3D;&gt; &#123;</span><br><span class="line">	document.querySelector(&quot;#input&quot;).value &#x3D; parseInt(a.getPercentage());</span><br><span class="line">&#125;);</span><br><span class="line">&#x2F;&#x2F;监听输入框改变</span><br><span class="line">document.querySelector(&quot;#input&quot;).onkeyup &#x3D; () &#x3D;&gt; &#123;</span><br><span class="line">	a.setData(document.querySelector(&quot;#input&quot;).value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF%E6%98%9F/" rel="tag"># 前端星</a>
+              <a href="/tags/%E7%BB%84%E4%BB%B6/" rel="tag"># 组件</a>
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/01/%E7%99%BE%E5%BA%A6%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%AD%A6%E9%99%A22018%E7%AC%94%E8%AE%B0%20%E4%B9%8B%20%E5%88%A9%E7%94%A8%20CSS%20animation%20%E5%88%B6%E4%BD%9C%E4%B8%80%E4%B8%AA%E7%82%AB%E9%85%B7%E7%9A%84%20Slider/" rel="prev" title="百度前端技术学院2018笔记 之 利用 CSS animation 制作一个炫酷的 Slider">
+      <i class="fa fa-chevron-left"></i> 百度前端技术学院2018笔记 之 利用 CSS animation 制作一个炫酷的 Slider
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/24/%E5%AF%B9vue%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E6%80%9D%E8%80%83/" rel="next" title="对vue双向绑定的思考">
+      对vue双向绑定的思考 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#轮播图组件实现大概思想"><span class="nav-number">2.</span> <span class="nav-text">轮播图组件实现大概思想</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#轮播组件之结构设计"><span class="nav-number">2.1.</span> <span class="nav-text">轮播组件之结构设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#轮播组件之API设计"><span class="nav-number">2.2.</span> <span class="nav-text">轮播组件之API设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#轮播组件之控制流设计"><span class="nav-number">2.3.</span> <span class="nav-text">轮播组件之控制流设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#轮播图之各种优化"><span class="nav-number">2.4.</span> <span class="nav-text">轮播图之各种优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拖动条组件的设计"><span class="nav-number">3.</span> <span class="nav-text">拖动条组件的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#样式设计"><span class="nav-number">3.1.</span> <span class="nav-text">样式设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API设计"><span class="nav-number">3.2.</span> <span class="nav-text">API设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现思路"><span class="nav-number">3.3.</span> <span class="nav-text">实现思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结反思"><span class="nav-number">3.4.</span> <span class="nav-text">总结反思</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">3.5.</span> <span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#html"><span class="nav-number">3.5.0.1.</span> <span class="nav-text">html</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#css"><span class="nav-number">3.5.0.2.</span> <span class="nav-text">css</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#js-滑动类"><span class="nav-number">3.5.0.3.</span> <span class="nav-text">js-滑动类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#js-new"><span class="nav-number">3.5.0.4.</span> <span class="nav-text">js-new</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="WindStormrage"
+      src="/images/favicon-logo.png">
+  <p class="site-author-name" itemprop="name">WindStormrage</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/WindStormrage" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WindStormrage" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:695729033@qq.com" title="E-Mail → mailto:695729033@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WindStormrage</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
