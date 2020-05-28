@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="从一个渐变圆角进度条浅出画一个圆开始这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了  echarts然后上echarts试了一下发现实现不出来了  设计图这边采用的是锥形渐变，而echarts只有线性渐变和径向渐变。 css然后准备换种方案，css就有锥形渐变，然后通过conic-gradient加上mask画出">
+  <meta name="description" content="从一个渐变圆角进度条浅出画一个圆开始这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了">
 <meta property="og:type" content="article">
 <meta property="og:title" content="canvas锥形渐变进度条">
 <meta property="og:url" content="https://xiedashuaige.cn/2020/05/28/canvas%E9%94%A5%E5%BD%A2%E6%B8%90%E5%8F%98%E8%BF%9B%E5%BA%A6%E6%9D%A1/index.html">
 <meta property="og:site_name" content="WindStormrage Blog">
-<meta property="og:description" content="从一个渐变圆角进度条浅出画一个圆开始这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了  echarts然后上echarts试了一下发现实现不出来了  设计图这边采用的是锥形渐变，而echarts只有线性渐变和径向渐变。 css然后准备换种方案，css就有锥形渐变，然后通过conic-gradient加上mask画出">
+<meta property="og:description" content="从一个渐变圆角进度条浅出画一个圆开始这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://p9.qhimg.com/dm/200_200_/t01b9c45ade0385f4e1.png">
 <meta property="og:image" content="http://p3.qhimg.com/dm/200_200_/t0161cd9dfa2f5a7997.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://p5.qhimg.com/t0162ef7e517cdc4087.png">
 <meta property="og:image" content="http://p4.qhimg.com/t01894f2312db2bc371.gif">
 <meta property="article:published_time" content="2020-05-28T08:41:00.000Z">
-<meta property="article:modified_time" content="2020-05-28T08:42:17.791Z">
+<meta property="article:modified_time" content="2020-05-28T08:46:15.875Z">
 <meta property="article:author" content="WindStormrage">
 <meta property="article:tag" content="canvas">
 <meta name="twitter:card" content="summary">
@@ -192,7 +192,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-28 16:41:00 / 修改时间：16:42:17" itemprop="dateCreated datePublished" datetime="2020-05-28T16:41:00+08:00">2020-05-28</time>
+              <time title="创建时间：2020-05-28 16:41:00 / 修改时间：16:46:15" itemprop="dateCreated datePublished" datetime="2020-05-28T16:41:00+08:00">2020-05-28</time>
             </span>
 
           
@@ -215,6 +215,8 @@
       
         <h1 id="从一个渐变圆角进度条浅出画一个圆"><a href="#从一个渐变圆角进度条浅出画一个圆" class="headerlink" title="从一个渐变圆角进度条浅出画一个圆"></a>从一个渐变圆角进度条浅出画一个圆</h1><h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了</p>
 <p><img src="http://p9.qhimg.com/dm/200_200_/t01b9c45ade0385f4e1.png" alt="image"></p>
+<a id="more"></a>
+
 <h2 id="echarts"><a href="#echarts" class="headerlink" title="echarts"></a>echarts</h2><p>然后上echarts试了一下发现实现不出来了</p>
 <p><img src="http://p3.qhimg.com/dm/200_200_/t0161cd9dfa2f5a7997.png" alt="image"></p>
 <p>设计图这边采用的是锥形渐变，而echarts只有线性渐变和径向渐变。</p>
