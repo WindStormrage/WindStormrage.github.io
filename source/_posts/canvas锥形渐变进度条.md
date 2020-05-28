@@ -10,6 +10,8 @@ tags: [canvas]
 
 ![image](http://p9.qhimg.com/dm/200_200_/t01b9c45ade0385f4e1.png)
 
+<!--more-->
+
 ## echarts
 
 然后上echarts试了一下发现实现不出来了
