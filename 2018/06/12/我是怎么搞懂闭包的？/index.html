@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"xiedashuaige.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="先从一个简单的闭包开始想从函数外部访问到函数内部的变量，当然是不可以访问的，但是你如果在这个函数里面返回一个方法用来对这个函数里面的变量进行操作的话，就可以像是在外面访问量函数内的变量（其实我暂时是认为没有访问函数里面变量的，实质上只是调用了对相应参数进行操作的方法），举个栗子把">
 <meta property="og:type" content="article">
 <meta property="og:title" content="我是怎么搞懂闭包的？">
-<meta property="og:url" content="https://xiedashuaige.cn/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/index.html">
 <meta property="og:site_name" content="WindStormrage Blog">
 <meta property="og:description" content="先从一个简单的闭包开始想从函数外部访问到函数内部的变量，当然是不可以访问的，但是你如果在这个函数里面返回一个方法用来对这个函数里面的变量进行操作的话，就可以像是在外面访问量函数内的变量（其实我暂时是认为没有访问函数里面变量的，实质上只是调用了对相应参数进行操作的方法），举个栗子把">
 <meta property="og:locale" content="zh_CN">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="前端">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://xiedashuaige.cn/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/">
+<link rel="canonical" href="http://yoursite.com/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/">
 
 
 <script id="page-configurations">
@@ -162,7 +162,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiedashuaige.cn/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon-logo.png">
@@ -412,16 +412,6 @@ console.log((tests())())
   </div>
 
 
-  <div class="links-of-blogroll motion-element">
-    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
-      友情链接
-    </div>
-    <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="https://xiedashuaige.cn/" title="https:&#x2F;&#x2F;xiedashuaige.cn">WindStormrage</a>
-        </li>
-    </ul>
-  </div>
 
       </div>
 
