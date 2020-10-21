@@ -8,7 +8,7 @@ tags: [canvas]
 ## 开始
 这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了
 
-![image](https://postimg.cc/LY1rHw1d)
+![image](https://i.postimg.cc/G27rj13p/t0161cd9dfa2f5a7997.png)
 
 <!--more-->
 
@@ -16,7 +16,7 @@ tags: [canvas]
 
 然后上echarts试了一下发现实现不出来了
 
-![image](https://postimg.cc/68bSCtVJ)
+![image](https://i.postimg.cc/HLTgDLVx/t0162ef7e517cdc4087.png)
 
 设计图这边采用的是锥形渐变，而echarts只有线性渐变和径向渐变。
 
@@ -88,23 +88,23 @@ Canvas可以轻松的实现[圆角和环形](https://jsbin.com/ceyehazaxo/1/edit
 ## 优化
 其实把绘制的过程放慢看
 
-![image](https://postimg.cc/JyyFqvKy)
+![image](https://i.postimg.cc/hGMqSqd0/t01894f2312db2bc371.gif)
 
 就是这个过程，每次画一段，每段不同的颜色组合起来就是一个渐变色，然后分段数再加多一点就会靠上去很流畅。
 
 在完成后发现了几个问题，首先是在分段数很少的时候就会出现一块一块的间隔
 
-![image](https://postimg.cc/7CcFrwbM)
+![image](https://i.postimg.cc/KzvxLY2V/t01b9c45ade0385f4e1.png)
 
 就像这样，我大概分析了一下，猜测这个间隔出现的原因应该是我计算每一段的角度的时候肯定有除不尽的，我就四舍五入了，应该就会产生一些小间隔。
 
 然后我就觉得把分段数提高应该就会好一些，然后就发现分段数高间隔会生成类似于摩尔纹的东西
 
-![image](https://postimg.cc/xNVBq5vX)
+![image](https://i.postimg.cc/MHnwPrXm/t01c635d899a51a97a3.gif)
 
 然后就开始思考怎么去消除，最后想到了一种方案就是在每次绘制的时候绘制两段的长度，然后移动只移动一段的长度，就会下一段覆盖在上一段，就不会有间隔了，然后颜色渐变也还是一段一段的不会有影响。
 
-![image](https://postimg.cc/kDWkLrCK)
+![image](https://i.postimg.cc/HWNdcHPZ/t01f57c7542eaebbe58.png)
 
 然后还有一个问题就是有锯齿，不清楚，解决方案也很简单，就是把你的画布放大指定倍数，然后半径也放大同样的倍数，最后dom的高宽不变，就会让绘制的图形更加的清晰。
 
