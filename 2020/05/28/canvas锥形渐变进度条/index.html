@@ -27,18 +27,18 @@
 <meta property="og:site_name" content="WindStormrage Blog">
 <meta property="og:description" content="从一个渐变圆角进度条浅出画一个圆开始这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://p9.qhimg.com/dm/200_200_/t01b9c45ade0385f4e1.png">
-<meta property="og:image" content="http://p3.qhimg.com/dm/200_200_/t0161cd9dfa2f5a7997.png">
-<meta property="og:image" content="http://p8.qhimg.com/t01c635d899a51a97a3.gif">
-<meta property="og:image" content="http://p6.qhimg.com/t01f57c7542eaebbe58.png">
-<meta property="og:image" content="http://p5.qhimg.com/t0162ef7e517cdc4087.png">
-<meta property="og:image" content="http://p4.qhimg.com/t01894f2312db2bc371.gif">
+<meta property="og:image" content="https://postimg.cc/LY1rHw1d">
+<meta property="og:image" content="https://postimg.cc/68bSCtVJ">
+<meta property="og:image" content="https://postimg.cc/JyyFqvKy">
+<meta property="og:image" content="https://postimg.cc/7CcFrwbM">
+<meta property="og:image" content="https://postimg.cc/xNVBq5vX">
+<meta property="og:image" content="https://postimg.cc/kDWkLrCK">
 <meta property="article:published_time" content="2020-05-28T08:41:00.000Z">
-<meta property="article:modified_time" content="2020-05-28T08:46:15.875Z">
+<meta property="article:modified_time" content="2020-10-21T09:56:33.222Z">
 <meta property="article:author" content="WindStormrage">
 <meta property="article:tag" content="canvas">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://p9.qhimg.com/dm/200_200_/t01b9c45ade0385f4e1.png">
+<meta name="twitter:image" content="https://postimg.cc/LY1rHw1d">
 
 <link rel="canonical" href="https://xiedashuaige.cn/2020/05/28/canvas%E9%94%A5%E5%BD%A2%E6%B8%90%E5%8F%98%E8%BF%9B%E5%BA%A6%E6%9D%A1/">
 
@@ -190,10 +190,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-05-28 16:41:00 / 修改时间：16:46:15" itemprop="dateCreated datePublished" datetime="2020-05-28T16:41:00+08:00">2020-05-28</time>
+              <time title="创建时间：2020-05-28 16:41:00" itemprop="dateCreated datePublished" datetime="2020-05-28T16:41:00+08:00">2020-05-28</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-21 17:56:33" itemprop="dateModified" datetime="2020-10-21T17:56:33+08:00">2020-10-21</time>
+              </span>
 
           
             <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
@@ -214,11 +220,11 @@
 
       
         <h1 id="从一个渐变圆角进度条浅出画一个圆"><a href="#从一个渐变圆角进度条浅出画一个圆" class="headerlink" title="从一个渐变圆角进度条浅出画一个圆"></a>从一个渐变圆角进度条浅出画一个圆</h1><h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了</p>
-<p><img src="http://p9.qhimg.com/dm/200_200_/t01b9c45ade0385f4e1.png" alt="image"></p>
+<p><img src="https://postimg.cc/LY1rHw1d" alt="image"></p>
 <a id="more"></a>
 
 <h2 id="echarts"><a href="#echarts" class="headerlink" title="echarts"></a>echarts</h2><p>然后上echarts试了一下发现实现不出来了</p>
-<p><img src="http://p3.qhimg.com/dm/200_200_/t0161cd9dfa2f5a7997.png" alt="image"></p>
+<p><img src="https://postimg.cc/68bSCtVJ" alt="image"></p>
 <p>设计图这边采用的是锥形渐变，而echarts只有线性渐变和径向渐变。</p>
 <h2 id="css"><a href="#css" class="headerlink" title="css"></a>css</h2><p>然后准备换种方案，css就有锥形渐变，然后通过conic-gradient加上mask画出了一个<a href="https://jsbin.com/holuxusiyi/1/edit?html,css,output" target="_blank" rel="noopener">渐变的环形</a>然后可以再通过剪裁实现出进度的展示。</p>
 <p>但是存在两个问题，一个是conic-gradient属性兼容性不好ie和火狐都不支持，二个是后来发现了还存在一个需求进度条的两端需要有圆角，然后这种实现方式就不行了。</p>
@@ -244,15 +250,15 @@
 
 <p>结果非常的顺利，就是自己想要的结果，具体怎么一段一段的画，怎么求出颜色的中间值<a href="https://jsbin.com/coconipuhi/2/edit?js,output" target="_blank" rel="noopener">看这里</a></p>
 <h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>其实把绘制的过程放慢看</p>
-<p><img src="http://p8.qhimg.com/t01c635d899a51a97a3.gif" alt="image"></p>
+<p><img src="https://postimg.cc/JyyFqvKy" alt="image"></p>
 <p>就是这个过程，每次画一段，每段不同的颜色组合起来就是一个渐变色，然后分段数再加多一点就会靠上去很流畅。</p>
 <p>在完成后发现了几个问题，首先是在分段数很少的时候就会出现一块一块的间隔</p>
-<p><img src="http://p6.qhimg.com/t01f57c7542eaebbe58.png" alt="image"></p>
+<p><img src="https://postimg.cc/7CcFrwbM" alt="image"></p>
 <p>就像这样，我大概分析了一下，猜测这个间隔出现的原因应该是我计算每一段的角度的时候肯定有除不尽的，我就四舍五入了，应该就会产生一些小间隔。</p>
 <p>然后我就觉得把分段数提高应该就会好一些，然后就发现分段数高间隔会生成类似于摩尔纹的东西</p>
-<p><img src="http://p5.qhimg.com/t0162ef7e517cdc4087.png" alt="image"></p>
+<p><img src="https://postimg.cc/xNVBq5vX" alt="image"></p>
 <p>然后就开始思考怎么去消除，最后想到了一种方案就是在每次绘制的时候绘制两段的长度，然后移动只移动一段的长度，就会下一段覆盖在上一段，就不会有间隔了，然后颜色渐变也还是一段一段的不会有影响。</p>
-<p><img src="http://p4.qhimg.com/t01894f2312db2bc371.gif" alt="image"></p>
+<p><img src="https://postimg.cc/kDWkLrCK" alt="image"></p>
 <p>然后还有一个问题就是有锯齿，不清楚，解决方案也很简单，就是把你的画布放大指定倍数，然后半径也放大同样的倍数，最后dom的高宽不变，就会让绘制的图形更加的清晰。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到此这个问题就算是解决了，然后我还顺便写了一个库，大家有兴趣的可以去使用一下，我还加上了数字，动画也可以支持多段渐变<a href="https://github.com/WindStormrage/gradient-ring-progress" target="_blank" rel="noopener">gradient-ring-progress</a></p>
 <p>通过这次的需求我收获到了，做东西需要完全的去了解了需求再去确定实现方案然后再动手，实现方案其实有非常多种，我们需要找到的是最合适的解决方案。最后抄袭张老师的一句话</p>
