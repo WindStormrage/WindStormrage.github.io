@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://xiedashuaige.cn
+# url: https://xiedashuaige.cn
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -139,4 +139,4 @@ filter_optimize:
   priority: 12
   
 Plugins:
-- hexo-generator-cname
+# - hexo-generator-cname

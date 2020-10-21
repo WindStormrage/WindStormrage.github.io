@@ -201,7 +201,7 @@ links_settings:
   layout: block
 
 links:
-  WindStormrage: https://xiedashuaige.cn
+  # WindStormrage: https://xiedashuaige.cn
 
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).
