@@ -180,7 +180,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-12-29 16:11:45 / 修改时间：16:37:37" itemprop="dateCreated datePublished" datetime="2020-12-29T16:11:45+08:00">2020-12-29</time>
+              <time title="创建时间：2020-12-29 16:11:45 / 修改时间：16:45:58" itemprop="dateCreated datePublished" datetime="2020-12-29T16:11:45+08:00">2020-12-29</time>
             </span>
 
           
@@ -197,78 +197,14 @@
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在前段时间公司内部的一个比赛上做了一个找工位的小项目，既然是找工位就得有工位的地图，本来是想着用建模的工具来把工位的模型建出来然后放在地图插件上，然后因为工作量，性能等原因没有继续思考下去了。</p>
 <p>梳理了一下需求无非就是需要实现出<strong>单指拖动</strong>，<strong>单指点击</strong>，<strong>双指缩放</strong>的效果，然后底下放一张图片来充当地图，然后记录下当前的位移和缩放，就可以算出点击的位置，然后把工位的坐标遍历一下就可以知道点击的是哪个工位了。</p>
 <p>开始以为非常的简单就可以实现出来，然后在项目的过程中遇到了很多的问题，然后项目完成后我就把拖动和缩放单独抽了出来，在这里我讲一下我的思路和遇到的问题。</p>
-<h1 id="简要思路"><a href="#简要思路" class="headerlink" title="简要思路"></a>简要思路</h1><p>通过<strong>touchstart</strong>和<strong>touchmove</strong>事件来监听手指的操作。缩放和移动实际上改变的是元素的<strong>transform</strong>的<strong>scale</strong>和<strong>translate</strong>，用一个全局变量来储存当前的位移和缩放，然后每次数据的改变去修改指定元素的缩放和移动</p>
-<h2 id="单指移动"><a href="#单指移动" class="headerlink" title="单指移动"></a>单指移动</h2><p>通过<strong>touchmove</strong>计算出两次手指的位移差，就是当前的位移量</p>
-<h2 id="双指缩放"><a href="#双指缩放" class="headerlink" title="双指缩放"></a>双指缩放</h2><p>当前两根手指之间的距离除去上一次两根手指的距离就是这一次的缩放量，然后缩放还有一个缩放中心的概念，有点复杂放在后面的实现过程中讲</p>
-<h1 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h1><h2 id="单指移动的实现"><a href="#单指移动的实现" class="headerlink" title="单指移动的实现"></a>单指移动的实现</h2><p>单指拖动较为简单，所以先来实现。我开始定义了一个transformData来记录当前的位移和缩放。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.transformData = &#123;</span><br><span class="line">  x: option?.transformData?.x || <span class="number">0</span>,</span><br><span class="line">  y: option?.transformData?.y || <span class="number">0</span>,</span><br><span class="line">  scale: option?.transformData?.scale || <span class="number">1</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>然后监听touchstart事件，作为移动的开始，记录下首次的点击的位置。</p>
-<blockquote>
-<p>这里遇到过一个问题，也是一个知识点，touch事件返回的对象里面会有<strong>targetTouches</strong>、<strong>Touches</strong>、<strong>changeTouches</strong>三种属性。touches为当前屏幕上所有触摸点的列表，targetTouches为当前对象上所有触摸点的列表，changedTouches为涉及当前(引发)事件的触摸点的列表。因为我的元素上会覆盖一些别的元素，所以我采用的是touches来获得点。</p>
-</blockquote>
-<p>然后监听touchmove事件来开始元素的移动，其中的store为上次记录的位置，当前位置减去上次的位置是这一次的位移，把这次的位移累加到之前的上面去。然后把这次的位置记录下来供下次使用，最后调用修改transform的方法。这就是一次完整的移动了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">move (x, y) &#123;</span><br><span class="line">  <span class="comment">// 当前偏移的计算</span></span><br><span class="line">  <span class="keyword">this</span>.transformData.x += x - <span class="keyword">this</span>.store.x;</span><br><span class="line">  <span class="keyword">this</span>.transformData.y += y - <span class="keyword">this</span>.store.y;</span><br><span class="line">  <span class="comment">// 记录下来下次使用</span></span><br><span class="line">  <span class="keyword">this</span>.store.x = x;</span><br><span class="line">  <span class="keyword">this</span>.store.y = y;</span><br><span class="line">  <span class="comment">// 修改css</span></span><br><span class="line">  <span class="keyword">this</span>.setTransform();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2020/12/22/bvVNducC5T6OUxW.png" alt="img1.png"></p>
-<h2 id="双指缩放的实现"><a href="#双指缩放的实现" class="headerlink" title="双指缩放的实现"></a>双指缩放的实现</h2><p>在touch的事件中加上一个判断，当touches的长度为1的时候是移动，长度为2就是缩放。</p>
-<blockquote>
-<p>这里又有一个问题了，第一根手指触摸到操作的容器，第二根手指触摸到的是操作容器之外就不会触发第二次的touchstart，这个得看具体的需求，如果需要第二根手指在任何区域都可以操作的话，或者前面用的是Touches的话就需要允许第二根手指在任何区域。这个时候要在touchmove触发的scale方法的开始判断一下之前有没有记录touchstart触发的scaleStart，没有的话调用一下scaleStart的方法，这次的move当做是start。</p>
-</blockquote>
-<p>同样也是在start的时候记录两指之间的距离，距离用<strong>勾股定理</strong>就可以算出来，然后在move的时候计算出当前两指的距离，然后当前距离除去上次记录的距离，就是本次缩放的比例。这个比例乘以之前记录的比例就可以得到当前缩放后的数值了。然后再把这个数值给记录下来供下次使用。最后调用修改transform的方法就可以实现缩放了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">scale(touchList) &#123;</span><br><span class="line">  <span class="comment">// 算出当前两指的距离</span></span><br><span class="line">  <span class="keyword">const</span> distance = <span class="built_in">Math</span>.sqrt(</span><br><span class="line">    (touchList[<span class="number">0</span>].clientX - touchList[<span class="number">1</span>].clientX) ** <span class="number">2</span> +</span><br><span class="line">      (touchList[<span class="number">0</span>].clientY - touchList[<span class="number">1</span>].clientY) ** <span class="number">2</span></span><br><span class="line">  );</span><br><span class="line">  <span class="comment">// 缩放大小为现在的两指距离除去上次的两指距离</span></span><br><span class="line">  <span class="keyword">const</span> scale = distance / <span class="keyword">this</span>.store.distance</span><br><span class="line">  <span class="keyword">this</span>.transform.scale *= scale</span><br><span class="line">  <span class="comment">// 记录这一次两指距离</span></span><br><span class="line">  <span class="keyword">this</span>.store.distance = distance;</span><br><span class="line">  <span class="comment">// 修改css</span></span><br><span class="line">  <span class="keyword">this</span>.setTransform();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2020/12/22/73yC6985wLANvTK.png" alt="行.png"></p>
-<h2 id="transform设置"><a href="#transform设置" class="headerlink" title="transform设置"></a>transform设置</h2><p>其实设置的话就是一句css</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">this.transformDom.style.transform = `</span><br><span class="line">  translate($&#123;this.transformData.x || 0&#125;px, $&#123;this.transformData.y || 0&#125;px)</span><br><span class="line">  scale($&#123;this.transformData.scale || 0&#125;, $&#123;this.transformData.scale || 0&#125;)</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
-
-<p>还得记得设置变化的原点，他默认是中心，因为我们操作都是相对于左上角操作所以需要把原点放在左上角</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">transform-origin</span>: 0<span class="selector-tag">px</span> 0<span class="selector-tag">px</span>;</span><br></pre></td></tr></table></figure>
-
-<p>但是translate和scale的顺序会影响画面的呈现。下图都是移动100像素，放大2倍。</p>
-<ul>
-<li>先移动再缩放是下图绿色，缩放并不会改变移动的数值</li>
-<li>先缩放再移动是下图蓝色，缩放会带来以后的移动的数据缩放</li>
-</ul>
-<p><a href="https://codepen.io/WindStormrage/pen/WNGEBKM?editors=1100" target="_blank" rel="noopener">点击试试</a></p>
-<p><img src="https://i.loli.net/2020/12/28/urf6bIpVcOLRyFt.png" alt="HEdUXK.png"></p>
-<p>由于我们记录的位移是没考虑缩放影响的，位移是多少最终展示的位移就是多少，所以我们采取绿色的方案，先translate再scale</p>
-<h2 id="坐标换算"><a href="#坐标换算" class="headerlink" title="坐标换算"></a>坐标换算</h2><p>我这里提出两个概念，<strong>操作容器坐标</strong>和<strong>渲染容器坐标</strong>，其中的操作容器指的是绑定了touch事件的容器，渲染容器指的是操作之后位移缩放作用的容器。</p>
-<p>提出这两个概念的原因是后面我们的缩放中心（下一节会讲）需要得到<strong>渲染容器坐标</strong>。还有我们后来做的确定用户点击的位置需要知道用户点击在底部地图的上的坐标，底部的地图就是我们的渲染容器。</p>
-<p>我们采用的是先位移后缩放，那么我们是不是可以把坐标值先反向缩放然后反向位移一下就可以了呢。不是这样的，因为他的缩放只是会影响缩放操作后的位置和大小，对先前已经位移的数值不会有影响，所以他的位移是没有被影响的应该先反向位移然后再反向缩放。</p>
-<p>位移缩放的顺序其实不是很好理解，开始我也是想了很久，后来我就模拟了一下实际情况得到答案再去理解就好理解一些。</p>
-<p>如下图，我们外边操作方块为400，内部方块的为100，每根刻度之间的距离为10。我们把内部的方块位移100缩放2得到现在的样式。然后我们用户点击位置是上面的红圈，对于外部方块为200的位置，然后对于里面的方块我们可以直观的看出是在50的位置，所以问题来了200通过操作100和操作2怎么得到50呢，显而易见就是(200 - 100) / 2 = 50，所以我们就知道了想转换就得先反向位移再反向缩放。</p>
-<p><a href="https://codepen.io/WindStormrage/pen/KKgvjXL" target="_blank" rel="noopener">点击看看</a><br><img src="https://i.loli.net/2020/12/28/aHm1LlpBefqk9W6.png" alt="未标题-1.png"></p>
-<h2 id="双指缩放的中心"><a href="#双指缩放的中心" class="headerlink" title="双指缩放的中心"></a>双指缩放的中心</h2><p>我们现在缩放是相对于渲染容器的左上角，在我们的实际操作时，经常缩放一下元素就不见了，体验非常的差，所以我们需要让我们的缩放的中心是我们两个手指点击的中心点，又因为我们的缩放和位移都是根据左上角这个点操作的，所以在缩放的时候我们需要适当的更改容器的位移，这样就会像是双指的中心点缩放。实现出来的效果大概就是下图。</p>
-<p><img src="https://i.loli.net/2020/12/29/DbsuelQ3aB9yXhC.png" alt="未标题-1.png"></p>
-<p>初始是蓝色的框框，手指从蓝色的圆圈移动到绿色的圆圈，期望得到的是绿色的框框，实际上我们现在是红色的框框。所以还需要修改一定的位移才能得到绿色的框框。</p>
-<p>理解具体问题了，看上去还挺绕的，对于不能直接用脑子(我太菜了)想出的问题我一般会模拟出一个实际的场景，得到一套方法，然后用方法尝试几个特殊的点，如果没啥问题就可以直接实现了。</p>
-<p>我们采用降维打击的技术(狗头)把二维的问题降解成一维的来看就会简单一点点，为啥可以降维呢，因为x和y的变换是相同的，所以我们先拿x来看看，估计y就copy就好了。</p>
-<p>说到缩放中心我们可以想到transform-origin，所以我们可以看看不同的transform-origin会带来容器什么样的位移。</p>
-<p><a href="https://codepen.io/WindStormrage/pen/MWjrVpB?editors=1100" target="_blank" rel="noopener">点击试试</a></p>
-<p><img src="https://i.loli.net/2020/12/29/V6rvwhgRNzuSMJx.png" alt="V6rvwhgRNzuSMJx"></p>
-<p>根据上面的例子可以看到，缩放中心的偏移会导致容器有相应比例的位移，而这个位移是相对于<strong>变换前</strong>减去<strong>变换后</strong>的长度乘以<strong>缩放中心距左边的比例</strong>。比如说缩放中心在0%的时候位移就是0；缩放中心在50%的时候，位移是多出的长度的一半；缩放中心在最右边的时候位移就是全部多出的长度。</p>
-<p>所以我们需要三个东西：旧的长度，新的长度，中心的距离左端的比例。长度很好得到，比例先需要得到用户点击的中心点，通过点击的(x1, y1)(x2, y2)两个点可以得到中心点是</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> center = </span><br><span class="line">  [x1 + (x2 - x1) / <span class="number">2</span>, y1 + (y2 - y1) / <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
-
-<p>这个点只是我们外部操作容器的位置，因为我们需要算出点在渲染容器位置的比例，需要把这个点转换成渲染容器上面的坐标，就是我们上面讲过的，先减去位移再除以比例</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> scaleCenter = [</span><br><span class="line">  center[<span class="number">0</span>] - <span class="keyword">this</span>.transformData.x) / <span class="keyword">this</span>.transformData.scale, </span><br><span class="line">  center[<span class="number">1</span>] - <span class="keyword">this</span>.transformData.y) / <span class="keyword">this</span>.transformData.scale</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-
-<p>然后我们得到比例是</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.scaleTranslateProportion = [</span><br><span class="line">  scaleCenter[<span class="number">0</span>] / <span class="keyword">this</span>.transformDom.offsetWidth,</span><br><span class="line">  scaleCenter[<span class="number">1</span>] / <span class="keyword">this</span>.transformDom.offsetHeight,</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
-
-<p>旧的长度其实就是缩放前的scale乘以容器长度，新的长度就是旧的长度乘以变化的scale</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> oldSize = [</span><br><span class="line">  <span class="keyword">this</span>.transformDom.offsetWidth * <span class="keyword">this</span>.transformData.scale,</span><br><span class="line">  <span class="keyword">this</span>.transformDom.offsetHeight * <span class="keyword">this</span>.transformData.scale,</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
-
-<p>然后我们只需要在缩放的同时添加对应的位移就可以了</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.transformData.x +=</span><br><span class="line">  (oldSize[<span class="number">0</span>] - oldSize[<span class="number">0</span>] * scale) *</span><br><span class="line">  scaleTranslateProportion[<span class="number">0</span>] || <span class="number">0</span>;</span><br><span class="line"><span class="keyword">this</span>.transformData.y +=</span><br><span class="line">  (oldSize[<span class="number">1</span>] - oldSize[<span class="number">1</span>] * scale) *</span><br><span class="line">  scaleTranslateProportion[<span class="number">1</span>] || <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这样得到的是体验非常好的双指缩放了</p>
-<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>到这里我们的单指移动和双指缩放就基本实现了，其实你要是只要简单的要这个功能的话还是很好实现的，但是做到后面你就发现还有很多需要深挖优化的地方，比如拖动能不能限制范围，缩放能不能限制比例，能不能直接点加减号进行缩放，这都是做好一个功能需要做的。</p>
-<p>其实在后来我看到有一个<strong>gesturechange</strong>的事件可以监听到手指的移动和缩放，但是只有safari才支持，我也没有继续研究了。</p>
-<p>通过这次我也学到了挺多的，从开始实现方案的确定，到后来遇到问题对问题进行分解逐步击破，都下了挺大的功夫。还有为这次文章的配图我也花了不少功夫。</p>
-<p>最后我把整体的代码包装了一下丢到了<a href="https://github.com/WindStormrage/touchMoveScale" target="_blank" rel="noopener">这里</a>还写了个有意思的<a href="http://htmlpreview.github.io/?https://github.com/WindStormrage/touchMoveScale/blob/master/index.html" target="_blank" rel="noopener">例子</a>，需要支持es6的手机端可以试试。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/12/29/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%8D%95%E6%8C%87%E7%A7%BB%E5%8A%A8%E5%92%8C%E5%8F%8C%E6%8C%87%E7%BC%A9%E6%94%BE%E7%9A%84%E5%AE%9E%E7%8E%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
