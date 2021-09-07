@@ -20,28 +20,51 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="WindStormrage Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="注：本文主要是在分享中使用，如果只是看本文的话最好是拿出编辑器跟着我的代码copy也好，对着敲也好，这样才更加了解我在说什么，完整代码在这，文章里面的链接也可以点击去试一试，放心，试出了问题才会想办法去解决~  D3是什么D3的全称是Data-Driven Document，可见D3是一个基于数据来操作文档的js库。他可以帮助你使用HTML，CSS，SVG甚至是Canvas来展示数据。D3操作S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="D3之一个图表的诞生">
+<meta property="og:url" content="http://yoursite.com/2021/09/07/D3%E4%B9%8B%E4%B8%80%E4%B8%AA%E5%9B%BE%E8%A1%A8%E7%9A%84%E8%AF%9E%E7%94%9F/index.html">
 <meta property="og:site_name" content="WindStormrage Blog">
+<meta property="og:description" content="注：本文主要是在分享中使用，如果只是看本文的话最好是拿出编辑器跟着我的代码copy也好，对着敲也好，这样才更加了解我在说什么，完整代码在这，文章里面的链接也可以点击去试一试，放心，试出了问题才会想办法去解决~  D3是什么D3的全称是Data-Driven Document，可见D3是一个基于数据来操作文档的js库。他可以帮助你使用HTML，CSS，SVG甚至是Canvas来展示数据。D3操作S">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aaa23720f02048c487e87bb620d50362~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/403c2c0895c347bf8faf45af1a1f1eee~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e67bbf26adf74142839f63d8d6558bce~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/69b9efd799a34e019f8803c2c928d1df~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8319f2ed9be74869ac9aba3bca460525~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/287d02dc4f724fd6b07bdfcf847c7454~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d47ec1343e0544049356207f88bb59e0~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/415cddfa0b714f308b7127822a315a61~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1566938c202e4a0f8a0d0792f7e251d6~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5d2e69d35d994b60882b484a6e39555d~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0eed5a73302445a4a6fc937e1759bbe7~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9870ba8dc9d54d058c11c6fd50998490~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/43aa74f2fca14863864325df255199d4~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3597b47115654280955c50b54fd39e84~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3e567f2fee74451bb9ad5381e80722b4~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f2cf6a8a6a5d4b40b36f94f0c0fe1b13~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d17cf23ff964c7f9a1311aa622b0cc0~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fd5c100a0125431b9d94d28405d858f5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2021-09-07T03:26:36.873Z">
+<meta property="article:modified_time" content="2021-09-07T03:33:41.342Z">
 <meta property="article:author" content="WindStormrage">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aaa23720f02048c487e87bb620d50362~tplv-k3u1fbpfcp-zoom-1.image">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2021/09/07/D3%E4%B9%8B%E4%B8%80%E4%B8%AA%E5%9B%BE%E8%A1%A8%E7%9A%84%E8%AF%9E%E7%94%9F/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>WindStormrage Blog</title>
+  <title>D3之一个图表的诞生 | WindStormrage Blog</title>
   
 
 
@@ -149,9 +172,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -167,10 +191,9 @@
       <meta itemprop="name" content="WindStormrage Blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/07/D3%E4%B9%8B%E4%B8%80%E4%B8%AA%E5%9B%BE%E8%A1%A8%E7%9A%84%E8%AF%9E%E7%94%9F/" class="post-title-link" itemprop="url">D3之一个图表的诞生</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          D3之一个图表的诞生
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -184,6 +207,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
 
         </div>
       </header>
@@ -194,7 +224,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <blockquote>
+        <blockquote>
 <p>注：本文主要是在分享中使用，如果只是看本文的话最好是拿出编辑器跟着我的代码copy也好，对着敲也好，这样才更加了解我在说什么，完整代码<a href="https://github.com/WindStormrage/my_d3_demo/tree/main/%E6%95%99%E5%AD%A6%E5%9B%BE%E8%A1%A8" target="_blank" rel="noopener">在这</a>，文章里面的链接也可以点击去试一试，放心，试出了问题才会想办法去解决~</p>
 </blockquote>
 <h1 id="D3是什么"><a href="#D3是什么" class="headerlink" title="D3是什么"></a>D3是什么</h1><p><strong>D3</strong>的全称是Data-Driven Document，可见D3是一个基于数据来操作文档的js库。他可以帮助你使用HTML，CSS，SVG甚至是Canvas来展示数据。D3操作SVG的写法像是JQuery，可以对元素添加删除和属性设置，不过D3可以将数据绑定到DOM上，然后根据数据来计算DOM的展示效果，这就是D3的数据驱动。D3不依赖任何库，而且D3不只是一个单独的库，你可以按需加载D3中任意一个单独的模块去使用。</p>
@@ -342,675 +372,43 @@
 <p><a href="https://www.d3indepth.com/introduction/" target="_blank" rel="noopener">D3 in Deoth</a></p>
 <p><a href="https://github.com/WindStormrage/my_d3_demo" target="_blank" rel="noopener">我学习过程中的一些demo</a></p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/29/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%8D%95%E6%8C%87%E7%A7%BB%E5%8A%A8%E5%92%8C%E5%8F%8C%E6%8C%87%E7%BC%A9%E6%94%BE%E7%9A%84%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/29/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%8D%95%E6%8C%87%E7%A7%BB%E5%8A%A8%E5%92%8C%E5%8F%8C%E6%8C%87%E7%BC%A9%E6%94%BE%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">移动端单指移动和双指缩放的实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-29 16:11:45 / 修改时间：16:45:58" itemprop="dateCreated datePublished" datetime="2020-12-29T16:11:45+08:00">2020-12-29</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在前段时间公司内部的一个比赛上做了一个找工位的小项目，既然是找工位就得有工位的地图，本来是想着用建模的工具来把工位的模型建出来然后放在地图插件上，然后因为工作量，性能等原因没有继续思考下去了。</p>
-<p>梳理了一下需求无非就是需要实现出<strong>单指拖动</strong>，<strong>单指点击</strong>，<strong>双指缩放</strong>的效果，然后底下放一张图片来充当地图，然后记录下当前的位移和缩放，就可以算出点击的位置，然后把工位的坐标遍历一下就可以知道点击的是哪个工位了。</p>
-<p>开始以为非常的简单就可以实现出来，然后在项目的过程中遇到了很多的问题，然后项目完成后我就把拖动和缩放单独抽了出来，在这里我讲一下我的思路和遇到的问题。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/29/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%8D%95%E6%8C%87%E7%A7%BB%E5%8A%A8%E5%92%8C%E5%8F%8C%E6%8C%87%E7%BC%A9%E6%94%BE%E7%9A%84%E5%AE%9E%E7%8E%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/28/canvas%E9%94%A5%E5%BD%A2%E6%B8%90%E5%8F%98%E8%BF%9B%E5%BA%A6%E6%9D%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/28/canvas%E9%94%A5%E5%BD%A2%E6%B8%90%E5%8F%98%E8%BF%9B%E5%BA%A6%E6%9D%A1/" class="post-title-link" itemprop="url">canvas锥形渐变进度条</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-28 16:41:00" itemprop="dateCreated datePublished" datetime="2020-05-28T16:41:00+08:00">2020-05-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-21 17:59:16" itemprop="dateModified" datetime="2020-10-21T17:59:16+08:00">2020-10-21</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="从一个渐变圆角进度条浅出画一个圆"><a href="#从一个渐变圆角进度条浅出画一个圆" class="headerlink" title="从一个渐变圆角进度条浅出画一个圆"></a>从一个渐变圆角进度条浅出画一个圆</h1><h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>这一切需要从一个（简单）的需求开始，在最开始对设计第一眼看到这张图的时候，感觉挺简单的嘛，直接用echarts饼图模拟出来一个就好了</p>
-<p><img src="https://i.postimg.cc/G27rj13p/t0161cd9dfa2f5a7997.png" alt="image"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/05/28/canvas%E9%94%A5%E5%BD%A2%E6%B8%90%E5%8F%98%E8%BF%9B%E5%BA%A6%E6%9D%A1/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/29/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%8D%95%E6%8C%87%E7%A7%BB%E5%8A%A8%E5%92%8C%E5%8F%8C%E6%8C%87%E7%BC%A9%E6%94%BE%E7%9A%84%E5%AE%9E%E7%8E%B0/" rel="prev" title="移动端单指移动和双指缩放的实现">
+      <i class="fa fa-chevron-left"></i> 移动端单指移动和双指缩放的实现
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
   
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E9%9C%80%E6%B1%82%E4%B9%8B%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E9%9C%80%E6%B1%82%E4%B9%8B%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="post-title-link" itemprop="url">文件上传需求之大文件上传</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-29 01:42:00" itemprop="dateCreated datePublished" datetime="2020-03-29T01:42:00+08:00">2020-03-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-10 19:17:53" itemprop="dateModified" datetime="2020-04-10T19:17:53+08:00">2020-04-10</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>本文主要是讲了菜鸡作者（我）在面对文件上传的需求的时候的一些解决方法，如果有问题或者有更好的方法欢迎大家指出。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E9%9C%80%E6%B1%82%E4%B9%8B%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/18/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/18/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Docker学习笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-12-18 16:59:00" itemprop="dateCreated datePublished" datetime="2018-12-18T16:59:00+08:00">2018-12-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-09 16:08:41" itemprop="dateModified" datetime="2020-04-09T16:08:41+08:00">2020-04-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Docker介绍"><a href="#Docker介绍" class="headerlink" title="Docker介绍"></a>Docker介绍</h2><p>最近花了点时间学习了一下docker，发现docker还是挺好用的，学了后也在实际中使用到了，就是一个静态页面需要跑在服务器上查看效果，如果用node跑的话还需要在项目中加上其他项目中没有用到的东西，然后用nginx的话还需要写个nginx的配置文件，如果在你的文件夹里面还需要设置权限，都比较麻烦，然后我就直接用上了docker，在之前使用docker的时候也装上过nginx的docker镜像，然后就只需要一条命令创建一个nginx的容器，然后把目标目录挂载到nginx上就可以访问到了，然后每次打开只需要docker start一下就好了，非常方便。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/12/18/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/08/nginx%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/08/nginx%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">nginx学习笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-12-08 15:05:00" itemprop="dateCreated datePublished" datetime="2018-12-08T15:05:00+08:00">2018-12-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-09 16:35:43" itemprop="dateModified" datetime="2020-04-09T16:35:43+08:00">2020-04-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="nginx-安装"><a href="#nginx-安装" class="headerlink" title="nginx 安装"></a>nginx 安装</h2><p>直接用brew安装，没有brew的自行安装</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/12/08/nginx%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/vue%E9%87%87%E7%94%A8history%E8%B7%AF%E7%94%B1%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/06/21/vue%E9%87%87%E7%94%A8history%E8%B7%AF%E7%94%B1%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">vue采用history路由的服务器部署问题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-06-21 23:21:00" itemprop="dateCreated datePublished" datetime="2018-06-21T23:21:00+08:00">2018-06-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-09 16:35:28" itemprop="dateModified" datetime="2020-04-09T16:35:28+08:00">2020-04-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="发现部署问题"><a href="#发现部署问题" class="headerlink" title="发现部署问题"></a>发现部署问题</h2><p>在部署的时候发现打开的页面是空白</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/06/21/vue%E9%87%87%E7%94%A8history%E8%B7%AF%E7%94%B1%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/" class="post-title-link" itemprop="url">我是怎么搞懂闭包的？</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-06-12 17:26:00" itemprop="dateCreated datePublished" datetime="2018-06-12T17:26:00+08:00">2018-06-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-09 16:34:56" itemprop="dateModified" datetime="2020-04-09T16:34:56+08:00">2020-04-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="先从一个简单的闭包开始"><a href="#先从一个简单的闭包开始" class="headerlink" title="先从一个简单的闭包开始"></a>先从一个简单的闭包开始</h2><p>想从函数外部访问到函数内部的变量，当然是不可以访问的，但是你如果在这个函数里面返回一个方法用来对这个函数里面的变量进行操作的话，就可以像是在外面访问量函数内的变量（其实我暂时是认为没有访问函数里面变量的，实质上只是调用了对相应参数进行操作的方法），举个栗子把</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/06/12/%E6%88%91%E6%98%AF%E6%80%8E%E4%B9%88%E6%90%9E%E6%87%82%E9%97%AD%E5%8C%85%E7%9A%84%EF%BC%9F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/29/%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%8D%95%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/05/29/%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%8D%95%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">动手实现一个单页面应用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-05-29 16:09:00" itemprop="dateCreated datePublished" datetime="2018-05-29T16:09:00+08:00">2018-05-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-09 16:33:39" itemprop="dateModified" datetime="2020-04-09T16:33:39+08:00">2020-04-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在单页面应用程序中，前后端采用了完全分离的方法，因此在前端实现路由的切换非常的重要。同时前端实现路由可以减少请求数，缓解后端的压力。在单页面中的路由主要有两种实现方法，一种是通过h5的history api来实现，还有一种是hash来实现。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/05/29/%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%8D%95%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/24/%E5%AF%B9vue%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E6%80%9D%E8%80%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon-logo.png">
-      <meta itemprop="name" content="WindStormrage">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WindStormrage Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/05/24/%E5%AF%B9vue%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E6%80%9D%E8%80%83/" class="post-title-link" itemprop="url">对vue双向绑定的思考</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-05-24 20:27:00" itemprop="dateCreated datePublished" datetime="2018-05-24T20:27:00+08:00">2018-05-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-09 16:35:59" itemprop="dateModified" datetime="2020-04-09T16:35:59+08:00">2020-04-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="对于数组"><a href="#对于数组" class="headerlink" title="对于数组"></a>对于数组</h3><p>直接更改数组里面的项的值是不会有view响应的，如：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/05/24/%E5%AF%B9vue%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E6%80%9D%E8%80%83/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
 
 
 
           </div>
           
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="WindStormrage/blogComment" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -1057,6 +455,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#D3是什么"><span class="nav-number">1.</span> <span class="nav-text">D3是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、D3能做什么"><span class="nav-number">2.</span> <span class="nav-text">二、D3能做什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、其他图表库"><span class="nav-number">3.</span> <span class="nav-text">三、其他图表库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、D3的使用步骤"><span class="nav-number">4.</span> <span class="nav-text">四、D3的使用步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、手把手来做个图"><span class="nav-number">5.</span> <span class="nav-text">五、手把手来做个图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-0-基础架子搭建"><span class="nav-number">5.0.1.</span> <span class="nav-text">5.0 基础架子搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-加载数据"><span class="nav-number">5.0.2.</span> <span class="nav-text">5.1 加载数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-创建比例尺"><span class="nav-number">5.0.3.</span> <span class="nav-text">5.2 创建比例尺</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-创建坐标轴"><span class="nav-number">5.0.4.</span> <span class="nav-text">5.3 创建坐标轴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-绘制图表"><span class="nav-number">5.0.5.</span> <span class="nav-text">5.4 绘制图表</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#5-4-1-Selected"><span class="nav-number">5.0.5.0.1.</span> <span class="nav-text">5.4.1 Selected</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-4-2-数据驱动"><span class="nav-number">5.0.5.0.2.</span> <span class="nav-text">5.4.2 数据驱动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-4-3-Data-join"><span class="nav-number">5.0.5.0.3.</span> <span class="nav-text">5.4.3 Data-join</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-4-4-数据更新"><span class="nav-number">5.0.5.0.4.</span> <span class="nav-text">5.4.4 数据更新</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-添加动画"><span class="nav-number">5.0.6.</span> <span class="nav-text">5.5 添加动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-6-添加交互"><span class="nav-number">5.0.7.</span> <span class="nav-text">5.6 添加交互</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、来给你看几个厉害的"><span class="nav-number">6.</span> <span class="nav-text">六、来给你看几个厉害的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-线图"><span class="nav-number">6.0.1.</span> <span class="nav-text">6.1 线图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-地图"><span class="nav-number">6.0.2.</span> <span class="nav-text">6.2 地图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-力导向图"><span class="nav-number">6.0.3.</span> <span class="nav-text">6.3 力导向图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、Canvas"><span class="nav-number">7.</span> <span class="nav-text">七、Canvas</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-数据绑定"><span class="nav-number">7.0.1.</span> <span class="nav-text">7.1 数据绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-交互事件"><span class="nav-number">7.0.2.</span> <span class="nav-text">7.2 交互事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-api支持"><span class="nav-number">7.0.3.</span> <span class="nav-text">7.3 api支持</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八、一些链接"><span class="nav-number">8.</span> <span class="nav-text">八、一些链接</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
